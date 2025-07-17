@@ -1,0 +1,13 @@
+- name: Create directories and copy files for samba
+  ansible.builtin.include_role: 
+    name: utils
+    tasks_from: tree.yml
+  vars:
+    item: samba
+
+- name: Build and run docker compose for samba
+  ansible.builtin.include_role: 
+    name: utils
+    tasks_from: docker.yml
+  vars:
+    item: samba

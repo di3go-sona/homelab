@@ -1,45 +1,9 @@
-- name: Update cluster systems
-  hosts: cluster
-  tasks:
-    - name: Update and upgrade all packages
-      become: yes
-      ansible.builtin.apt:
-        update_cache: yes
-        upgrade: full
-      register: update_result
+# - name: Update OS and install base services
+#   ansible.builtin.import_playbook: playbooks/base.yml
 
-    - name: Reboot if updates were installed
-      become: yes
-      ansible.builtin.reboot:
-        msg: "Rebooting after updates"
-        connect_timeout: 5
-        reboot_timeout: 600
-      when: update_result.changed
+- name: Configure and mount SMB share
+  ansible.builtin.import_playbook: playbooks/storage.yml
 
-
-- name: Mount SMB share on cluster nodes
-  hosts: cluster
-  tasks:
-    # sudo mount -t cifs //router.lan/GL-Samba /mnt/cluster -o guest,vers=1.0
-    - name: Add SMB share to fstab
-      become: yes
-      ansible.builtin.mount:
-        path: /mnt/homelab
-        src: //router.lan/GL-Samba
-        fstype: cifs
-        opts: "guest,vers=1.0,uid=1000,gid=1000"
-        state: present
-    
-    - name: Ensure the mount point exists
-      become: yes
-      ansible.builtin.file:
-        path: /mnt/homelab
-        state: directory
-
-    - name: Ensure the mount is mounted
-      become: yes
-      ansible.builtin.command:
-        cmd: mount -a
-      register: mount_output
-      changed_when: mount_output.rc != 0
-
+- name: Deploy monitoring stack
+  ansible.builtin.import_playbook: playbooks/monitoring.yml
+  

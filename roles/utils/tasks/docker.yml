@@ -1,0 +1,28 @@
+- name: Build {{item}} container
+  community.docker.docker_compose_v2:
+    project_src: "{{homelab_root_dir}}/{{item}}/src"
+    build: always
+    state: present
+  register: docker_compose_output
+
+- name: Ensure {{item}} container is running if it was restarted
+  when: docker_compose_output.changed
+  block:
+  - name: Collect id of restarted containers for {{item}}
+    set_fact:
+      restarted_container_id: "{{ docker_compose_output.actions | map(attribute='id') | list | first }}"
+
+  - name: Get state of restarted containers for {{item}}
+    community.docker.docker_container_info:
+      name: "{{ restarted_container_id }}"
+      debug: true
+    register: container_info
+
+  - name: Display state of restarted containers for {{item}}
+    ansible.builtin.debug:
+      msg: "Container is in state: {{ container_info.container.State.Status }}"
+    
+  - name: abort
+    ansible.builtin.fail:
+      msg: "Container {{ restarted_container_id }} is not running after restart"
+    when: container_info.container.State.Status != "running"

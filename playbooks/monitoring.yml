@@ -1,0 +1,12 @@
+- name: Deploy Prometheus Exporters 
+  hosts: cluster
+  roles:
+    - prometheus_node_exporter
+    # - prometheus_blackbox_exporter
+
+- name: Deploy Prometheus Server
+  hosts: monitoring
+  roles:
+    - prometheus
+
+

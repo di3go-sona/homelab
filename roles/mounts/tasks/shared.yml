@@ -1,0 +1,22 @@
+# sudo mount -t cifs //router.lan/GL-Samba /mnt/cluster -o guest,vers=1.0
+- name: Add SMB share to fstab
+  become: yes
+  ansible.builtin.mount:
+    path: /mnt/homelab
+    src: //router.lan/GL-Samba
+    fstype: cifs
+    opts: "guest,vers=1.0,uid=1000,gid=1000"
+    state: present
+
+- name: Ensure the mount point exists
+  become: yes
+  ansible.builtin.file:
+    path: /mnt/homelab
+    state: directory
+
+- name: Ensure the mount is mounted
+  become: yes
+  ansible.builtin.command:
+    cmd: mount -a
+  register: mount_output
+  changed_when: mount_output.rc != 0

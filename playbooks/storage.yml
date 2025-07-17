@@ -1,0 +1,9 @@
+- name: Deploy Samba Service
+  hosts: storage
+  roles:
+    - samba
+
+# - name: Mount SMB share on cluster nodes
+#   hosts: cluster
+#   roles:
+#     - shared_storage

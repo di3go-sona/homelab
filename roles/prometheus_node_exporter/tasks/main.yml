@@ -1,0 +1,13 @@
+- name: Create directories and copy files for prometheus_node_exporter
+  ansible.builtin.include_role: 
+    name: utils
+    tasks_from: tree.yml
+  vars:
+    item: prometheus_node_exporter
+
+- name: Build and run docker compose for prometheus_node_exporter
+  ansible.builtin.include_role: 
+    name: utils
+    tasks_from: docker.yml
+  vars:
+    item: prometheus_node_exporter
