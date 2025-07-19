@@ -4,8 +4,8 @@ services:
     container_name: samba
     environment:
       NAME: "Data"
-      USER: ${ HOMELAB_USER }
-      PASS: ${ HOMELAB_PASS }
+      USER: ${HOMELAB_USER}
+      PASS: ${HOMELAB_PASS}
     ports:
       - 445:445
     volumes:

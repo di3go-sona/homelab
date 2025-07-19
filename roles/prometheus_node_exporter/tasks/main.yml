@@ -11,3 +11,12 @@
     tasks_from: docker.yml
   vars:
     item: prometheus_node_exporter
+
+- name: Write Prometheus exporter configuration
+  ansible.builtin.include_role: 
+    name: utils
+    tasks_from: prometheus_exporter.yml
+  vars:
+    exporter_host: "{{ ansible_hostname }}"
+    exporter_name: "node_exporter"
+    exporter_port: 9100

@@ -21,7 +21,7 @@
     path: "{{ homelab_shared_storage_dir}}"
     src: //{{ groups.storage | first }}/Data
     fstype: cifs
-    opts: "guest"
+    opts: "username={{ homelab_user }},password={{ homelab_pass }}"
     state: present
   register: mount_fstab
 

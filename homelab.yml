@@ -18,11 +18,11 @@
   roles:
     - prometheus
 
-- name: Deploy Prometheus Blackbox Exporter
-  hosts: monitoring
-  tags: monitoring
-  roles:
-    - prometheus_blackbox_exporter
+# - name: Deploy Prometheus Blackbox Exporter
+#   hosts: monitoring
+#   tags: monitoring
+#   roles:
+#     - prometheus_blackbox_exporter
 
 - name: Deploy Prometheus Node Exporter 
   hosts: cluster
