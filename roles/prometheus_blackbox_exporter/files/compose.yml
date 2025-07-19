@@ -5,3 +5,4 @@ services:
       - "9115:9115"
     command:
       - 'blackbox_exporter'
+    restart: unless-stopped

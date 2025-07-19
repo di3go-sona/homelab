@@ -12,3 +12,4 @@ services:
       - '--web.telemetry-path=/metrics'
       - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
+    restart: unless-stopped

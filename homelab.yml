@@ -1,9 +1,41 @@
-# - name: Update OS and install base services
-#   ansible.builtin.import_playbook: playbooks/base.yml
 
-- name: Configure and mount SMB share
-  ansible.builtin.import_playbook: playbooks/storage.yml
+- name: Deploy Samba
+  hosts: storage
+  tags: storage, samba
+  roles:
+    - samba
 
-- name: Deploy monitoring stack
-  ansible.builtin.import_playbook: playbooks/monitoring.yml
+- name: Mount SMB share on cluster nodes
+  hosts: cluster
+  tags: storage, mounts
+  roles:
+    - mounts_shared
+
+
+- name: Deploy Prometheus 
+  hosts: monitoring
+  tags: monitoring
+  roles:
+    - prometheus
+
+- name: Deploy Prometheus Blackbox Exporter
+  hosts: monitoring
+  tags: monitoring
+  roles:
+    - prometheus_blackbox_exporter
+
+- name: Deploy Prometheus Node Exporter 
+  hosts: cluster
+  tags: monitoring
+  roles:
+    - prometheus_node_exporter
+
+
+- name: Deploy Home Assistant Server
+  hosts: services
+  tags: services, homeassistant
+  roles:
+    - homeassistant
+
+
   

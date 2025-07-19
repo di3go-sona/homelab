@@ -1,0 +1,39 @@
+
+- name: Ensure the mount point exists
+  become: yes
+  ansible.builtin.file:
+    path: "{{ homelab_shared_storage_dir}}"
+    state: directory
+
+# - name: Add SMB share to fstab
+#   become: yes
+#   ansible.builtin.mount:
+#     path: "{{ homelab_shared_storage_dir}}"
+#     src: //{{ groups.router | first }}/GL-Samba
+#     fstype: cifs
+#     opts: "guest,vers=1.0,uid=1000,gid=1000"
+#     state: present
+#   register: mount_fstab
+
+- name: Add SMB share to fstab
+  become: yes
+  ansible.builtin.mount:
+    path: "{{ homelab_shared_storage_dir}}"
+    src: //{{ groups.storage | first }}/Data
+    fstype: cifs
+    opts: "guest"
+    state: present
+  register: mount_fstab
+
+- name: Reload systemd to apply changes
+  become: yes
+  ansible.builtin.systemd:
+    daemon_reload: yes
+  when: mount_fstab.changed
+
+- name: Ensure the mount is mounted
+  become: yes
+  ansible.builtin.command:
+    cmd: mount -a
+  register: mount_output
+  changed_when: mount_output.rc != 0

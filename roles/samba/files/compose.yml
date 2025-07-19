@@ -4,10 +4,10 @@ services:
     container_name: samba
     environment:
       NAME: "Data"
-      USER: "samba"
-      PASS: "secret"
+      USER: ${ HOMELAB_USER }
+      PASS: ${ HOMELAB_PASS }
     ports:
       - 445:445
     volumes:
-      - ./samba:/storage
-    restart: always
+      - /mnt/homelab/local:/storage
+    restart: unless-stopped

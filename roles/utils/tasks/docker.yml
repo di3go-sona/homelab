@@ -4,6 +4,9 @@
     build: always
     state: present
   register: docker_compose_output
+  environment:
+    HOMELAB_USER: "{{ homelab_user }}"
+    HOMELAB_PASSWORD: "{{ homelab_password }}"
 
 - name: Ensure {{item}} container is running if it was restarted
   when: docker_compose_output.changed
