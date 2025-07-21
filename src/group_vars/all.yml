@@ -1,0 +1,5 @@
+homelab_root_dir: /opt/homelab
+homelab_local_storage_dir: /mnt/homelab/local
+homelab_shared_storage_dir: /mnt/homelab/shared
+homelab_user: homelab
+homelab_pass: homelab

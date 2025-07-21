@@ -1,0 +1,30 @@
+- name: Ensure {{homelab_root_dir}}/{{item}} directory exists
+  become: yes
+  ansible.builtin.file:
+    path: "{{homelab_root_dir}}/{{item}}"
+    state: directory
+
+- name: Ensure {{homelab_root_dir}}/{{item}}/src directory exists
+  become: yes
+  ansible.builtin.file:
+    path: "{{homelab_root_dir}}/{{item}}/src"
+    state: directory
+
+- name: Ensure {{homelab_root_dir}}/{{item}}/etc directory exists
+  become: yes
+  ansible.builtin.file:
+    path: "{{homelab_root_dir}}/{{item}}/etc"
+    state: directory
+
+- name: Ensure {{homelab_root_dir}}/{{item}}/var/lib directory exists
+  become: yes
+  ansible.builtin.file:
+    path: "{{homelab_root_dir}}/{{item}}/var/lib"
+    state: directory
+
+
+- name: Copy {{item}} files
+  become: yes
+  ansible.posix.synchronize:
+    src: "{{ ansible_parent_role_paths | first }}/files/"
+    dest: "{{homelab_root_dir}}/{{item}}/src"

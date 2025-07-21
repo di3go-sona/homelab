@@ -1,0 +1,15 @@
+services:
+  prometheus_node_exporter:
+    build: .
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+    command:
+      - 'node_exporter'
+      - '--web.listen-address=:9100'
+      - '--web.telemetry-path=/metrics'
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+    restart: unless-stopped

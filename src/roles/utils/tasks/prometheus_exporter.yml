@@ -1,0 +1,21 @@
+
+- name: Ensure Prometheus file_sd directory exists
+  become: yes
+  ansible.builtin.file:
+    path: "{{ homelab_root_dir }}/prometheus/etc/file_sd"
+    state: directory
+
+- name: Write Prometheus exporter configuration to file_sd directory
+  become: yes
+  ansible.builtin.template:
+    src: prometheus_exporter.yml.j2
+    dest: "{{ homelab_root_dir }}/prometheus/etc/file_sd/{{ exporter_host }}.{{ exporter_name }}.yml"
+  delegate_to: "{{ groups['monitoring'] | first }}"
+  register: exporter_config
+
+- name: Reload Prometheus configuration
+  become: yes
+  ansible.builtin.command:
+    cmd: curl -X POST http://{{ groups['monitoring'] | first }}:9090/-/reload
+  register: reload_output
+  # when: exporter_config.changed

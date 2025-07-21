@@ -1,0 +1,111 @@
+- name: Register OS and ARCH variables
+  block:
+    - name: Register OS
+      ansible.builtin.shell:
+        cmd: "uname -s | tr '[:upper:]' '[:lower:]'"
+      changed_when: false
+      register: os
+    - name: Set OS fact
+      ansible.builtin.set_fact:
+        os: "{{ os.stdout }}"
+    - name: Register ARCH
+      ansible.builtin.shell:
+        cmd: "uname -m | tr '[:upper:]' '[:lower:]' | sed 's/armv6l/armv6/' | sed 's/armv7l/armv7/'"
+      changed_when: false
+      register: arch
+    - name: Set ARCH fact
+      ansible.builtin.set_fact:
+        arch: "{{ arch.stdout }}"
+
+- name: Debug OS and ARCH
+  block:
+    - name: Print OS and ARCH
+      ansible.builtin.debug:
+        msg: "OS: {{ os }}, ARCH: {{ arch }}"
+
+- name: Update cluster systems
+  block:
+    - name: Update and upgrade all packages
+      become: yes
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: full
+      register: update_result
+
+    - name: Reboot if updates were installed
+      become: yes
+      ansible.builtin.reboot:
+        msg: "Rebooting after updates"
+        connect_timeout: 5
+        reboot_timeout: 600
+      when: update_result.changed
+
+- name: Install Docker on cluster nodes
+  block:
+    - name: Install Docker
+      become: yes
+      ansible.builtin.apt:
+        name:
+          - docker.io
+        state: latest
+
+    - name: Ensure Docker Compose plugin directory exists
+      become: yes
+      ansible.builtin.file:
+        path: /usr/local/lib/docker/cli-plugins/
+        state: directory
+        mode: '0755'
+      
+    - name: Install Docker Compose plugin
+      become: yes
+      ansible.builtin.get_url:
+        url: https://github.com/docker/compose/releases/latest/download/docker-compose-{{ os }}-{{ arch }}
+        dest: /usr/local/lib/docker/cli-plugins/docker-compose
+        mode: '+x'
+        force: yes
+
+
+    - name: Ensure Docker is running
+      become: yes
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+        enabled: true
+    
+    - name: Add user to Docker group
+      become: yes
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: true
+    
+- name: Set avahi in reflector mode to support mDNS
+  block:
+    - name: Install avahi-daemon
+      become: yes
+      ansible.builtin.apt:
+        name: avahi-daemon
+        state: latest
+
+    - name: Ensure avahi-daemon is running
+      become: yes
+      ansible.builtin.systemd:
+        name: avahi-daemon
+        state: started
+        enabled: true
+
+    - name: Configure avahi to support mDNS reflector mode
+      become: yes
+      ansible.builtin.lineinfile:
+        path: /etc/avahi/avahi-daemon.conf
+        regexp: 'enable-reflector='
+        line: 'enable-reflector=yes'
+        state: present
+      register: avahi_config
+
+    - name: Restart avahi-daemon to apply changes
+      become: yes
+      ansible.builtin.systemd:
+        name: avahi-daemon
+        state: restarted
+      when: avahi_config.changed

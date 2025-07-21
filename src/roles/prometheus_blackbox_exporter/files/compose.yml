@@ -1,0 +1,8 @@
+services:
+  prometheus_blackbox_exporter:
+    build: .
+    ports:
+      - "9115:9115"
+    command:
+      - 'blackbox_exporter'
+    restart: unless-stopped

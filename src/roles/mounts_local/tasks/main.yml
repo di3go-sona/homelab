@@ -1,0 +1,5 @@
+- name: Ensure the mount point exists
+  become: yes
+  ansible.builtin.file:
+    path: "{{ homelab_local_storage_dir }}"
+    state: directory

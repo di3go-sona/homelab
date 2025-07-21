@@ -1,0 +1,54 @@
+# Base
+- name: Set up basic cluster configuration
+  hosts: cluster
+  tags: base
+  roles:
+    - base
+
+# Storage
+- name: Mount SMB share on cluster nodes
+  hosts: storage
+  tags: storage, mounts, mounts_local
+  roles:
+    - mounts_local
+
+- name: Deploy Samba
+  hosts: storage
+  tags: storage, samba
+  roles:
+    - samba
+
+- name: Mount SMB share on cluster nodes
+  hosts: cluster
+  tags: storage, mounts, mounts_shared
+  roles:
+    - mounts_shared
+
+# Monitoring
+- name: Deploy Prometheus 
+  hosts: monitoring
+  tags: monitoring
+  roles:
+    - prometheus
+
+# - name: Deploy Prometheus Blackbox Exporter
+#   hosts: monitoring
+#   tags: monitoring
+#   roles:
+#     - prometheus_blackbox_exporter
+
+- name: Deploy Prometheus Node Exporter 
+  hosts: cluster
+  tags: monitoring
+  roles:
+    - prometheus_node_exporter
+
+# Services
+- name: Deploy Home Assistant Server
+  hosts: services
+  tags: services, homeassistant
+  roles:
+    - homeassistant
+
+
+  

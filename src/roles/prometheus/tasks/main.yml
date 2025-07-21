@@ -1,0 +1,22 @@
+- name: Create directories and copy files for prometheus
+  ansible.builtin.include_role: 
+    name: utils
+    tasks_from: tree.yml
+  vars:
+    item: prometheus
+
+- name: Render prometheus configuration
+  become: yes
+  ansible.builtin.template:
+    src: prometheus.yml.j2
+    dest: "{{homelab_root_dir}}/prometheus/etc/prometheus.yml"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Build and run docker compose for prometheus
+  ansible.builtin.include_role: 
+    name: utils
+    tasks_from: docker.yml
+  vars:
+    item: prometheus
