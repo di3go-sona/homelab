@@ -27,7 +27,7 @@
 # Monitoring
 - name: Deploy Prometheus 
   hosts: monitoring
-  tags: monitoring
+  tags: monitoring, prometheus
   roles:
     - prometheus
 
@@ -39,7 +39,7 @@
 
 - name: Deploy Prometheus Node Exporter 
   hosts: cluster
-  tags: monitoring
+  tags: monitoring, node_exporter
   roles:
     - prometheus_node_exporter
 
