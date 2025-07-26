@@ -10,7 +10,7 @@ RUN mkdir -p /usr/local/bin
 # This uses a service to map the current system's uname output to the correct GOOS and GOARCH values
 RUN \
     export OS="$(uname -s | tr '[:upper:]' '[:lower:]')" && \
-    export ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')" && \
+    export ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/' -e 's/armv6l/armv6/' )" && \
     export VERSION=0.27.0 && \
     echo "Detected OS: $OS, ARCH: $ARCH" && \
     wget -qO- https://github.com/prometheus/blackbox_exporter/releases/download/v$VERSION/blackbox_exporter-$VERSION.$OS-$ARCH.tar.gz | tar xz -C /tmp && \
