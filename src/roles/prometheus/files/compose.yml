@@ -1,5 +1,6 @@
 services:
   prometheus:
+    container_name: prometheus_server
     build: .
     ports:
       - "9090:9090"
@@ -7,8 +8,8 @@ services:
       - /opt/homelab/prometheus/etc:/etc/prometheus
       - /opt/homelab/prometheus/var/lib:/var/lib/prometheus
     command:
-      - 'prometheus'
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/var/lib/prometheus'
-      - '--web.enable-lifecycle'
+      - "prometheus"
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/var/lib/prometheus"
+      - "--web.enable-lifecycle"
     restart: unless-stopped

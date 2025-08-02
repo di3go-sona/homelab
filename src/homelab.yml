@@ -25,7 +25,7 @@
     - mounts_shared
 
 # Monitoring
-- name: Deploy Prometheus 
+- name: Deploy Prometheus
   hosts: monitoring
   tags: monitoring, prometheus
   roles:
@@ -37,11 +37,17 @@
 #   roles:
 #     - prometheus_blackbox_exporter
 
-- name: Deploy Prometheus Node Exporter 
+- name: Deploy Prometheus Node Exporter
   hosts: cluster
-  tags: monitoring, node_exporter
+  tags: monitoring, exporters, node_exporter
   roles:
     - prometheus_node_exporter
+
+- name: Deploy Prometheus Cadvisor Exporter
+  hosts: cluster
+  tags: monitoring, exporters, cadvisor
+  roles:
+    - prometheus_cadvisor_exporter
 
 # Services
 - name: Deploy Home Assistant Server
@@ -49,6 +55,3 @@
   tags: services, homeassistant
   roles:
     - homeassistant
-
-
-  

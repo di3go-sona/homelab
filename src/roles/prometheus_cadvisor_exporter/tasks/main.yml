@@ -1,16 +1,16 @@
-- name: Create directories and copy files for prometheus_node_exporter
+- name: Create directories and copy files for prometheus_cadvisor_exporter
   ansible.builtin.include_role:
     name: utils
     tasks_from: tree.yml
   vars:
-    item: prometheus_node_exporter
+    item: prometheus_cadvisor_exporter
 
-- name: Build and run docker compose for prometheus_node_exporter
+- name: Build and run docker compose for prometheus_cadvisor_exporter
   ansible.builtin.include_role:
     name: utils
     tasks_from: docker.yml
   vars:
-    item: prometheus_node_exporter
+    item: prometheus_cadvisor_exporter
 
 - name: Write Prometheus exporter configuration
   ansible.builtin.include_role:
@@ -18,5 +18,5 @@
     tasks_from: prometheus_exporter.yml
   vars:
     exporter_host: "{{ ansible_hostname }}"
-    exporter_name: "node"
-    exporter_port: 9100
+    exporter_name: "cadvisor"
+    exporter_port: 8080

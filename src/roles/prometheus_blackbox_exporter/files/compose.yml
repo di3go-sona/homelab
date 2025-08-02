@@ -1,8 +1,9 @@
 services:
   prometheus_blackbox_exporter:
+    container_name: prometheus_blackbox_exporter
     build: .
     ports:
       - "9115:9115"
     command:
-      - 'blackbox_exporter'
+      - "blackbox_exporter"
     restart: unless-stopped

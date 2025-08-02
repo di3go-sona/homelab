@@ -1,0 +1,15 @@
+services:
+  prometheus_cadvisor_exporter:
+    container_name: prometheus_cadvisor_exporter
+    build: .
+
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run/:/var/run/:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg:/dev/kmsg
