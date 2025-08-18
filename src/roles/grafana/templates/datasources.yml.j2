@@ -1,0 +1,4 @@
+datasources:
+  - name: Prometheus
+    url: "http://{{ groups['monitoring'] | first }}:9090"
+    access: proxy

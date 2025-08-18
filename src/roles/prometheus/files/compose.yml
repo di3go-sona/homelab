@@ -1,6 +1,6 @@
 services:
   prometheus:
-    container_name: prometheus_server
+    container_name: prometheus
     build: .
     ports:
       - "9090:9090"

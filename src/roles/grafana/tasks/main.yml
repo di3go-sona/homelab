@@ -1,0 +1,43 @@
+- name: Create directories and copy files for grafana
+  ansible.builtin.include_role: 
+    name: utils
+    tasks_from: tree.yml
+  vars:
+    item: grafana
+
+- name: Create grafana provisioning directories
+  become: yes
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  loop:
+    - "{{homelab_root_dir}}/grafana/etc/provisioning/"
+    - "{{homelab_root_dir}}/grafana/etc/provisioning/plugins"
+
+- name: Render grafana datasources provisioning
+  become: yes
+  ansible.builtin.template:
+    src: datasources.yml.j2
+    dest: "{{homelab_root_dir}}/grafana/etc/provisioning/datasources.yml"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copy grafana dashboards folder provisioning
+  become: yes
+  ansible.builtin.copy:
+    src: "dashboards/"
+    dest: "{{homelab_root_dir}}/grafana/etc/provisioning/dashboards/"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Build and run docker compose for grafana
+  ansible.builtin.include_role: 
+    name: utils
+    tasks_from: docker.yml
+  vars:
+    item: grafana

@@ -6,23 +6,23 @@
     - base
 
 # Storage
-- name: Mount SMB share on cluster nodes
-  hosts: storage
-  tags: storage, mounts, mounts_local
-  roles:
-    - mounts_local
+# - name: Mount local storage
+#   hosts: storage
+#   tags: storage, mounts, mounts_local
+#   roles:
+#     - mounts_local
 
-- name: Deploy Samba
-  hosts: storage
-  tags: storage, samba
-  roles:
-    - samba
+# - name: Deploy Samba
+#   hosts: storage
+#   tags: storage, samba
+#   roles:
+#     - samba
 
-- name: Mount SMB share on cluster nodes
-  hosts: cluster
-  tags: storage, mounts, mounts_shared
-  roles:
-    - mounts_shared
+# - name: Mount SMB share on cluster nodes
+#   hosts: cluster
+#   tags: storage, mounts, mounts_shared
+#   roles:
+#     - mounts_shared
 
 # Monitoring
 - name: Deploy Prometheus
@@ -30,6 +30,12 @@
   tags: monitoring, prometheus
   roles:
     - prometheus
+
+- name: Deploy Grafana
+  hosts: monitoring
+  tags: monitoring, grafana
+  roles:
+    - grafana
 
 # - name: Deploy Prometheus Blackbox Exporter
 #   hosts: monitoring

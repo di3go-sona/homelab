@@ -14,6 +14,10 @@
   - name: Collect id of restarted containers for {{item}}
     set_fact:
       restarted_container_id: "{{ docker_compose_output.actions | map(attribute='id') | list | first }}"
+  
+  - name: Display restarted container id for {{item}}
+    ansible.builtin.debug:
+      msg: "Restarted container ID: {{ restarted_container_id }}"
 
   - name: Get state of restarted containers for {{item}}
     community.docker.docker_container_info:

@@ -1,5 +1,6 @@
 services:
-  prometheus_node_exporter:
+  node_exporter:
+    container_name: node_exporter
     build: .
     ports:
       - "9100:9100"

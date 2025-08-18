@@ -1,0 +1,11 @@
+services:
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - /opt/homelab/grafana/etc/provisioning:/etc/grafana/provisioning
+    command:
+      - "grafana"
+    restart: unless-stopped

@@ -1,8 +1,7 @@
 services:
-  prometheus_cadvisor_exporter:
-    container_name: prometheus_cadvisor_exporter
+  cadvisor:
+    container_name: cadvisor
     build: .
-
     ports:
       - "8080:8080"
     volumes:
