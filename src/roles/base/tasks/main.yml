@@ -109,3 +109,9 @@
         name: avahi-daemon
         state: restarted
       when: avahi_config.changed
+
+- name: Clean up homelab installation
+  block:
+    - name: Include clean tasks
+      ansible.builtin.include_tasks: clean.yml
+      when: clean | default(false) | bool

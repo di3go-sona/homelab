@@ -16,21 +16,32 @@
   loop:
     - "{{homelab_root_dir}}/grafana/etc/provisioning/"
     - "{{homelab_root_dir}}/grafana/etc/provisioning/plugins"
+    - "{{homelab_root_dir}}/grafana/etc/provisioning/dashboards"
+    - "{{homelab_root_dir}}/grafana/etc/provisioning/datasources"
 
-- name: Render grafana datasources provisioning
+- name: Render provisioning datasources
   become: yes
   ansible.builtin.template:
     src: datasources.yml.j2
-    dest: "{{homelab_root_dir}}/grafana/etc/provisioning/datasources.yml"
+    dest: "{{homelab_root_dir}}/grafana/etc/provisioning/datasources/datasources.yml"
     owner: root
     group: root
     mode: '0644'
 
-- name: Copy grafana dashboards folder provisioning
+- name: Render provisioning dashboards
+  become: yes
+  ansible.builtin.template:
+    src: dashboards.yml.j2
+    dest: "{{homelab_root_dir}}/grafana/etc/provisioning/dashboards/dashboards.yml"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copy grafana dashboards 
   become: yes
   ansible.builtin.copy:
     src: "dashboards/"
-    dest: "{{homelab_root_dir}}/grafana/etc/provisioning/dashboards/"
+    dest: "{{homelab_root_dir}}/grafana/etc/dashboards/"
     owner: root
     group: root
     mode: '0644'

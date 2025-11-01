@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 2,
   "links": [
     {
       "asDropdown": false,
@@ -51,7 +51,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "det15ewscv6rkc"
+        "uid": "${datasource}"
       },
       "description": "Basic CPU info",
       "fieldConfig": {
@@ -439,89 +439,12 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "det15ewscv6rkc"
+            "uid": "${datasource}"
           },
-          "editorMode": "code",
-          "expr": "sum by (instance)(irate(node_cpu_seconds_total{mode='iowait',instance=~\"^$host:.*\"}[$__rate_interval])) * 100",
-          "format": "time_series",
-          "intervalFactor": 2,
-          "legendFormat": "Busy Iowait",
+          "expr": "",
+          "instant": false,
           "range": true,
-          "refId": "C",
-          "step": 240
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "det15ewscv6rkc"
-          },
-          "editorMode": "code",
-          "expr": "sum by (instance)(irate(node_cpu_seconds_total{mode=~\".*irq\",instance=~\"^$host:.*\"}[$__rate_interval])) * 100",
-          "format": "time_series",
-          "intervalFactor": 2,
-          "legendFormat": "Busy IRQs",
-          "range": true,
-          "refId": "D",
-          "step": 240
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "det15ewscv6rkc"
-          },
-          "editorMode": "code",
-          "expr": "sum (irate(node_cpu_seconds_total{mode!='idle',mode!='user',mode!='system',mode!='iowait',mode!='irq',mode!='softirq',instance=~\"^$host:.*\"}[$__rate_interval])) * 100",
-          "format": "time_series",
-          "intervalFactor": 2,
-          "legendFormat": "Busy Other",
-          "range": true,
-          "refId": "E",
-          "step": 240
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "det15ewscv6rkc"
-          },
-          "editorMode": "code",
-          "expr": "sum by (instance)(irate(node_cpu_seconds_total{mode=\"system\",instance=~\"^$host:.*\"}[$__rate_interval])) * 100",
-          "format": "time_series",
-          "hide": false,
-          "intervalFactor": 2,
-          "legendFormat": "Busy System",
-          "range": true,
-          "refId": "A",
-          "step": 240
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "det15ewscv6rkc"
-          },
-          "editorMode": "code",
-          "expr": "sum by (instance)(irate(node_cpu_seconds_total{mode='user',instance=~\"^$host:.*\"}[$__rate_interval])) * 100",
-          "format": "time_series",
-          "hide": false,
-          "intervalFactor": 2,
-          "legendFormat": "Busy User",
-          "range": true,
-          "refId": "B",
-          "step": 240
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "det15ewscv6rkc"
-          },
-          "editorMode": "code",
-          "expr": "sum by (mode)(irate(node_cpu_seconds_total{mode='idle',instance=~\"^$host:.*\"}[$__rate_interval])) * 100",
-          "format": "time_series",
-          "hide": true,
-          "intervalFactor": 2,
-          "legendFormat": "Idle",
-          "range": true,
-          "refId": "F",
-          "step": 240
+          "refId": "A"
         }
       ],
       "title": "CPU",
@@ -530,7 +453,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "det15ewscv6rkc"
+        "uid": "${datasource}"
       },
       "description": "Basic memory usage",
       "fieldConfig": {
@@ -985,74 +908,12 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "det15ewscv6rkc"
+            "uid": "${datasource}"
           },
-          "editorMode": "code",
-          "expr": "node_memory_MemTotal_bytes{instance=~\"^$host:.*\"}",
-          "format": "time_series",
-          "hide": false,
-          "intervalFactor": 2,
-          "legendFormat": "RAM Total",
+          "expr": "",
+          "instant": false,
           "range": true,
-          "refId": "A",
-          "step": 240
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "det15ewscv6rkc"
-          },
-          "editorMode": "code",
-          "expr": "node_memory_MemTotal_bytes{instance=~\"^$host:.*\"} - node_memory_MemFree_bytes{instance=~\"^$host:.*\"} - (node_memory_Cached_bytes{instance=~\"^$host:.*\"} + node_memory_Buffers_bytes{instance=~\"^$host:.*\"})",
-          "format": "time_series",
-          "hide": false,
-          "intervalFactor": 2,
-          "legendFormat": "RAM Used",
-          "range": true,
-          "refId": "B",
-          "step": 240
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "det15ewscv6rkc"
-          },
-          "editorMode": "code",
-          "expr": "node_memory_Cached_bytes{instance=~\"^$host:.*\"} + node_memory_Buffers_bytes{instance=~\"^$host:.*\"}",
-          "format": "time_series",
-          "intervalFactor": 2,
-          "legendFormat": "RAM Cache + Buffer",
-          "range": true,
-          "refId": "C",
-          "step": 240
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "det15ewscv6rkc"
-          },
-          "editorMode": "code",
-          "expr": "node_memory_MemFree_bytes{instance=~\"^$host:.*\"}",
-          "format": "time_series",
-          "intervalFactor": 2,
-          "legendFormat": "RAM Free",
-          "range": true,
-          "refId": "D",
-          "step": 240
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "det15ewscv6rkc"
-          },
-          "editorMode": "code",
-          "expr": "(node_memory_SwapTotal_bytes{instance=~\"^$host:.*\"} - node_memory_SwapFree_bytes{instance=~\"^$host:.*\"})",
-          "format": "time_series",
-          "intervalFactor": 2,
-          "legendFormat": "SWAP Used",
-          "range": true,
-          "refId": "E",
-          "step": 240
+          "refId": "A"
         }
       ],
       "title": "Memory",
@@ -1061,7 +922,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "det15ewscv6rkc"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1162,55 +1023,12 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "det15ewscv6rkc"
+            "uid": "${datasource}"
           },
-          "disableTextWrap": false,
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "avg by (device, fstype, mountpoint) (node_filesystem_size_bytes{instance=~\"^$host:.*\"})",
-          "format": "table",
-          "fullMetaSearch": false,
-          "hide": true,
-          "includeNullMetadata": true,
-          "instant": true,
-          "legendFormat": "__auto",
-          "range": false,
-          "refId": "Total",
-          "useBackend": false
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "det15ewscv6rkc"
-          },
-          "disableTextWrap": false,
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "avg by (device, fstype, mountpoint) (node_filesystem_avail_bytes{instance=~\"^$host:.*\"})",
-          "format": "table",
-          "fullMetaSearch": false,
-          "hide": false,
-          "includeNullMetadata": true,
-          "instant": true,
-          "legendFormat": "__auto",
-          "range": false,
-          "refId": "Free",
-          "useBackend": false
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "det15ewscv6rkc"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "avg by (device, fstype, mountpoint) ((node_filesystem_size_bytes{instance=~\"^$host:.*\"}-node_filesystem_avail_bytes{instance=~\"^$host:.*\"}))",
-          "format": "table",
-          "hide": false,
-          "instant": true,
-          "legendFormat": "__auto",
-          "range": false,
-          "refId": "Used"
+          "expr": "",
+          "instant": false,
+          "range": true,
+          "refId": "A"
         }
       ],
       "title": "Storage",
@@ -1267,7 +1085,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "det15ewscv6rkc"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1345,29 +1163,14 @@
       "pluginVersion": "12.1.0",
       "targets": [
         {
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "sum by (id, name) (irate(container_cpu_usage_seconds_total{instance=~\"^$host:.*\",name=~\"$container\"}[$__rate_interval]))",
-          "format": "table",
-          "instant": true,
-          "legendFormat": "CPU",
-          "range": false,
-          "refId": "A"
-        },
-        {
           "datasource": {
             "type": "prometheus",
-            "uid": "det15ewscv6rkc"
+            "uid": "${datasource}"
           },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "sum by (id, name) (irate(container_memory_rss{instance=~\"^$host:.*\",name=~\"$container\"}[$__rate_interval]))",
-          "format": "table",
-          "hide": false,
-          "instant": true,
-          "legendFormat": "__auto",
-          "range": false,
-          "refId": "B"
+          "expr": "",
+          "instant": false,
+          "range": true,
+          "refId": "A"
         }
       ],
       "title": "Services",
@@ -1425,18 +1228,18 @@
             "$__all"
           ]
         },
-        "definition": "label_values(up,instance)",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "definition": "",
         "description": "Hostname",
         "includeAll": true,
         "label": "Hostname",
         "multi": true,
         "name": "host",
         "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(up,instance)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
+        "query": "",
         "refresh": 1,
         "regex": "/(.*):.*/",
         "type": "query"
@@ -1449,21 +1252,34 @@
             "$__all"
           ]
         },
-        "definition": "label_values(container_cpu_load_average_10s,name)",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "definition": "",
         "description": "",
         "includeAll": true,
         "label": "Container",
         "multi": true,
         "name": "container",
         "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(container_cpu_load_average_10s,name)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
+        "query": "",
         "refresh": 1,
         "regex": "",
         "type": "query"
+      },
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": "Prometheus",
+          "value": "PBFA97CFB590B2093"
+        },
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
       }
     ]
   },
@@ -1475,5 +1291,5 @@
   "timezone": "Europe/Amsterdam",
   "title": "Nodes Overview",
   "uid": "683a1b6e-2899-452c-869b-3c71fa7258f6",
-  "version": 46
+  "version": 1
 }

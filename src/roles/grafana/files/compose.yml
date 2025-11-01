@@ -6,6 +6,7 @@ services:
       - "3000:3000"
     volumes:
       - /opt/homelab/grafana/etc/provisioning:/etc/grafana/provisioning
+      - /opt/homelab/grafana/etc/dashboards/:/etc/dashboards
     command:
       - "grafana"
     restart: unless-stopped
