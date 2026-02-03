@@ -1,0 +1,36 @@
+
+- name: Ensure k0sctl is installed
+  command: k0sctl version
+  register: k0sctl_check
+  ignore_errors: true
+  changed_when: false
+  delegate_to: localhost
+  run_once: true
+
+- name: Fail if k0sctl is not installed
+  fail:
+    msg: "k0sctl is not installed on localhost. Please install it first."
+  when: k0sctl_check.rc != 0
+  delegate_to: localhost
+  run_once: true
+
+- name: Render k0sctl config
+  template:
+    src: k0sctl.yaml.j2
+    dest: "{{ playbook_dir }}/k0sctl.yaml"
+    mode: '0644'
+  delegate_to: localhost
+  run_once: true
+
+- name: Reset k0s cluster
+  command: k0sctl reset --config "{{ playbook_dir }}/k0sctl.yaml" --force
+  when: k0s_recreate | default(false) | bool
+  delegate_to: localhost
+  run_once: true
+
+- name: Apply k0s cluster configuration
+  command: k0sctl apply --config "{{ playbook_dir }}/k0sctl.yaml"
+  delegate_to: localhost
+  run_once: true
+
+
