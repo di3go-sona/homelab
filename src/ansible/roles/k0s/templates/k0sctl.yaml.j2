@@ -6,12 +6,12 @@ metadata:
 spec:
   hosts:
   {% for host in groups['cluster'] %}
-  - ssh:
-      address: {{ hostvars[host]['ansible_host'] }}
-      user: {{ hostvars[host]['ansible_user'] }}
-      port: 22
-      keyPath: ~/.ssh/id_rsa
-    role: {{ hostvars[host]['cluster_role'] }}
+    - ssh:
+        address: {{ hostvars[host]['ansible_host'] }}
+        user: {{ hostvars[host]['ansible_user'] }}
+        port: 22
+        keyPath: ~/.ssh/id_rsa
+      role: {{ hostvars[host]['cluster_role'] }}
   {% endfor %}
   options:
     wait:
