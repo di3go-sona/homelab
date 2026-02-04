@@ -5,14 +5,14 @@ metadata:
   user: admin
 spec:
   hosts:
-  {% for host in groups['cluster'] %}
+{% for host in groups['cluster'] %}
     - ssh:
         address: {{ hostvars[host]['ansible_host'] }}
         user: {{ hostvars[host]['ansible_user'] }}
-        port: 22
-        keyPath: ~/.ssh/id_rsa
+        # port: 22
+        # keyPath: ~/.ssh/id_rsa
       role: {{ hostvars[host]['cluster_role'] }}
-  {% endfor %}
+{% endfor %}
   options:
     wait:
       enabled: true

@@ -1,7 +1,7 @@
-# - name: Basic setup for all servers
-#   hosts: all
-#   roles:
-#     - role: base
+- name: Basic setup for all servers
+  hosts: all
+  roles:
+    - role: base
 
 - name: Setup k0s cluster
   hosts: localhost
