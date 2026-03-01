@@ -21,17 +21,7 @@ spec:
       metadata:
         name: k0s
       spec:
-        extensions:
-          helm:
-            repositories:
-            - name: argo
-              url: https://argoproj.github.io/argo-helm
-            charts:
-            - name: argocd
-              chartname: argo/argo-cd
-              version: "7.7.16"
-              namespace: argocd
-              values: |
-                server:
-                  service:
-                    type: NodePort
+        network:
+          provider: custom
+          kubeProxy:
+            disabled: true

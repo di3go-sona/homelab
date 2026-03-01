@@ -1,0 +1,49 @@
+---
+- name: Add Cilium Helm repo
+  kubernetes.core.helm_repository:
+    name: cilium
+    repo_url: https://helm.cilium.io/
+
+- name: Install Cilium
+  command:
+    cmd: >
+      helm upgrade --install cilium cilium/cilium
+      --version 1.15.5
+      --namespace kube-system
+      --create-namespace
+      --kubeconfig {{ k0s_kubeconfig_file }}
+      --set kubeProxyReplacement=true
+      --set k8sServiceHost={{ hostvars[groups['cluster'][0]]['ansible_host'] }}
+      --set k8sServicePort=6443
+  changed_when: true
+
+- name: Add NFS CSI driver Helm repo
+  kubernetes.core.helm_repository:
+    name: csi-driver-nfs
+    repo_url: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
+
+- name: Install NFS CSI driver
+  command:
+    cmd: >
+      helm upgrade --install csi-driver-nfs csi-driver-nfs/csi-driver-nfs
+      --version v4.6.0
+      --namespace kube-system
+      --create-namespace
+      --kubeconfig {{ k0s_kubeconfig_file }}
+      --set kubeletDir=/var/lib/k0s/kubelet
+  changed_when: true
+
+- name: Add ArgoCD Helm repo
+  kubernetes.core.helm_repository:
+    name: argo
+    repo_url: https://argoproj.github.io/argo-helm
+
+- command:
+    cmd: >
+      helm upgrade --install argocd argo/argo-cd
+      --version 6.7.11
+      --namespace argocd
+      --create-namespace
+      --kubeconfig {{ k0s_kubeconfig_file }}
+      --set server.service.type=NodePort
+  changed_when: true

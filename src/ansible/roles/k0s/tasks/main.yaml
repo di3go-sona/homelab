@@ -20,11 +20,11 @@
   when: k0s_recreate | default(false) | bool
   delegate_to: localhost
   run_once: true
+  ignore_errors: true
 
-# - name: Apply k0s cluster configuration
-#   command: k0sctl apply --config "{{ playbook_dir }}/k0sctl.yaml"
-#   delegate_to: localhost
-#   run_once: true
+- name: Apply k0s cluster configuration
+  command: k0sctl apply --config "{{ playbook_dir }}/k0sctl.yaml" --no-wait --debug
+  delegate_to: localhost
 
 - name: Get kubeconfig
   command: k0sctl kubeconfig --config "{{ playbook_dir }}/k0sctl.yaml"
@@ -44,7 +44,7 @@
 - name: Write kubeconfig to file
   copy:
     content: "{{ k0s_kubeconfig.stdout }}"
-    dest: "~/.kube/config.homelab"
+    dest: "{{ k0s_kubeconfig_file }}"
     mode: '0600'
   delegate_to: localhost
   run_once: true
@@ -52,7 +52,7 @@
 - name: Add kubeconfig to zshrc
   lineinfile:
     path: "~/.zshrc"
-    line: 'export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config.homelab'
+    line: 'export KUBECONFIG=$KUBECONFIG:{{ k0s_kubeconfig_file }}'
     state: present
     create: true
   delegate_to: localhost

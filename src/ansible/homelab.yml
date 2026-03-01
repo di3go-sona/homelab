@@ -3,8 +3,9 @@
   roles:
     - role: base
 
-- name: Setup k0s cluster
+- name: Setup kubernetes cluster
   hosts: localhost
   roles:
     - role: k0s
+    - role: helm
       
