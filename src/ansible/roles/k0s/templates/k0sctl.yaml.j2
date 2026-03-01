@@ -9,28 +9,29 @@ spec:
     - ssh:
         address: {{ hostvars[host]['ansible_host'] }}
         user: {{ hostvars[host]['ansible_user'] }}
-        # port: 22
-        # keyPath: ~/.ssh/id_rsa
+      noTaints: true
       role: {{ hostvars[host]['cluster_role'] }}
 {% endfor %}
-  options:
-    wait:
-      enabled: true
-    drain:
-      enabled: true
-      gracePeriod: 2m0s
-      timeout: 5m0s
-      force: true
-      ignoreDaemonSets: true
-      deleteEmptyDirData: true
-      podSelector: ""
-      skipWaitForDeleteTimeout: 0s
-    concurrency:
-      limit: 30
-      workerDisruptionPercent: 10
-      uploads: 5
-    evictTaint:
-      enabled: false
-      taint: k0sctl.k0sproject.io/evict=true
-      effect: NoExecute
-      controllerWorkers: false
+  k0s:
+    version: v1.35.1+k0s.0
+    dynamicConfig: false
+    config:
+      apiVersion: k0s.k0sproject.io/v1beta1
+      kind: ClusterConfig
+      metadata:
+        name: k0s
+      spec:
+        extensions:
+          helm:
+            repositories:
+            - name: argo
+              url: https://argoproj.github.io/argo-helm
+            charts:
+            - name: argocd
+              chartname: argo/argo-cd
+              version: "7.7.16"
+              namespace: argocd
+              values: |
+                server:
+                  service:
+                    type: NodePort

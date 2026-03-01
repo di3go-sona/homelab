@@ -14,8 +14,6 @@
     src: k0sctl.yaml.j2
     dest: "{{ playbook_dir }}/k0sctl.yaml"
     mode: '0644'
-    delegate_to: localhost
-    run_once: true
 
 - name: Reset k0s cluster
   command: k0sctl reset --config "{{ playbook_dir }}/k0sctl.yaml" --force

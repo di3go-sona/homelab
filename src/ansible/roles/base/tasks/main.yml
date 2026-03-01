@@ -1,28 +1,3 @@
-# - name: Register OS and ARCH variables
-#   block:
-#     - name: Register OS
-#       ansible.builtin.shell:
-#         cmd: "uname -s | tr '[:upper:]' '[:lower:]'"
-#       changed_when: false
-#       register: os
-#     - name: Set OS fact
-#       ansible.builtin.set_fact:
-#         os: "{{ os.stdout }}"
-#     - name: Register ARCH
-#       ansible.builtin.shell:
-#         cmd: "uname -m | tr '[:upper:]' '[:lower:]' | sed 's/armv6l/armv6/' | sed 's/armv7l/armv7/'"
-#       changed_when: false
-#       register: arch
-#     - name: Set ARCH fact
-#       ansible.builtin.set_fact:
-#         arch: "{{ arch.stdout }}"
-
-# - name: Debug OS and ARCH
-#   block:
-#     - name: Print OS and ARCH
-#       ansible.builtin.debug:
-#         msg: "OS: {{ os }}, ARCH: {{ arch }}"
-
 - name: Update all packages to the latest version
   become: yes
   ansible.builtin.apt:
