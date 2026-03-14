@@ -38,11 +38,24 @@
     name: argo
     repo_url: https://argoproj.github.io/argo-helm
 
-- command:
+- name: Install ArgoCD
+  command:
     cmd: >
       helm upgrade --install argocd argo/argo-cd
       --version 6.7.11
       --namespace argocd
       --create-namespace
       --kubeconfig {{ k0s_kubeconfig_file }}
+      --set configs.cm."users\.anonymous\.enabled"=true
+      --set configs.rbac."policy\.default"=role:admin
+  changed_when: true
+
+- name: Wait for ArgoCD server to be ready
+  command:
+    cmd: kubectl --kubeconfig {{ k0s_kubeconfig_file }} rollout status deployment/argocd-server -n argocd --timeout=120s
+  changed_when: false
+
+- name: Bootstrap app-of-apps
+  command:
+    cmd: kubectl --kubeconfig {{ k0s_kubeconfig_file }} apply -f {{ playbook_dir }}/../../src/argo/app-of-apps.yaml
   changed_when: true

@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/argoproj/argo-helm.git
+    targetRevision: argo-cd-6.7.11
+    path: charts/argo-cd
+    helm:
+      parameters:
+        - name: configs.cm."users\.anonymous\.enabled"
+          value: "true"
+        - name: configs.rbac."policy\.default"
+          value: "role:admin"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
