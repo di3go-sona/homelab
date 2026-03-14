@@ -10,11 +10,12 @@ spec:
     targetRevision: argo-cd-6.7.11
     path: charts/argo-cd
     helm:
-      parameters:
-        - name: configs.cm."users\.anonymous\.enabled"
-          value: "true"
-        - name: configs.rbac."policy\.default"
-          value: "role:admin"
+      values: |
+        configs:
+          cm:
+            users.anonymous.enabled: "true"
+          rbac:
+            policy.default: "role:admin"
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
