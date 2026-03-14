@@ -26,22 +26,6 @@
   changed_when: true
   when: argocd_cilium_check.rc != 0
 
-# - name: Add NFS CSI driver Helm repo
-#   kubernetes.core.helm_repository:
-#     name: csi-driver-nfs
-#     repo_url: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
-
-# - name: Install NFS CSI driver
-#   command:
-#     cmd: >
-#       helm upgrade --install csi-driver-nfs csi-driver-nfs/csi-driver-nfs
-#       --version v4.6.0
-#       --namespace kube-system
-#       --create-namespace
-#       --kubeconfig {{ k0s_kubeconfig_file }}
-#       --set kubeletDir=/var/lib/k0s/kubelet
-#   changed_when: true
-
 - name: Check if ArgoCD already manages itself
   command:
     cmd: kubectl --kubeconfig {{ k0s_kubeconfig_file }} get application argocd -n argocd

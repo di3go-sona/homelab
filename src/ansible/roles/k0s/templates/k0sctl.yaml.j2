@@ -11,6 +11,7 @@ spec:
         user: {{ hostvars[host]['ansible_user'] }}
       noTaints: true
       role: {{ hostvars[host]['cluster_role'] }}
+      kubeletRootDir: /var/lib/kubelet
 {% endfor %}
   k0s:
     version: v1.35.1+k0s.0
