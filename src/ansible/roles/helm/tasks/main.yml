@@ -1,8 +1,16 @@
 ---
+- name: Check if ArgoCD already manages Cilium
+  command:
+    cmd: kubectl --kubeconfig {{ k0s_kubeconfig_file }} get application cilium -n argocd
+  register: argocd_cilium_check
+  failed_when: false
+  changed_when: false
+
 - name: Add Cilium Helm repo
   kubernetes.core.helm_repository:
     name: cilium
     repo_url: https://helm.cilium.io/
+  when: argocd_cilium_check.rc != 0
 
 - name: Install Cilium
   command:
@@ -16,6 +24,7 @@
       --set k8sServiceHost={{ hostvars[groups['cluster'][0]]['ansible_host'] }}
       --set k8sServicePort=6443
   changed_when: true
+  when: argocd_cilium_check.rc != 0
 
 # - name: Add NFS CSI driver Helm repo
 #   kubernetes.core.helm_repository:
@@ -33,10 +42,18 @@
 #       --set kubeletDir=/var/lib/k0s/kubelet
 #   changed_when: true
 
+- name: Check if ArgoCD already manages itself
+  command:
+    cmd: kubectl --kubeconfig {{ k0s_kubeconfig_file }} get application argocd -n argocd
+  register: argocd_self_check
+  failed_when: false
+  changed_when: false
+
 - name: Add ArgoCD Helm repo
   kubernetes.core.helm_repository:
     name: argo
     repo_url: https://argoproj.github.io/argo-helm
+  when: argocd_self_check.rc != 0
 
 - name: Install ArgoCD
   command:
@@ -49,6 +66,7 @@
       --set configs.cm."users\.anonymous\.enabled"=true
       --set configs.rbac."policy\.default"=role:admin
   changed_when: true
+  when: argocd_self_check.rc != 0
 
 - name: Wait for ArgoCD server to be ready
   command:
