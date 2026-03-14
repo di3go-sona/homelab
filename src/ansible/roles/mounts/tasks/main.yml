@@ -15,3 +15,30 @@
     opts: "{{ item.opts | default('defaults') }}"
     state: mounted
   loop: "{{ host_mounts[inventory_hostname] | default([]) }}"
+
+- name: Install NFS server
+  become: yes
+  ansible.builtin.apt:
+    name: nfs-kernel-server
+    state: present
+    update_cache: yes
+  when: host_mounts[inventory_hostname] | default([]) | selectattr('nfs_export', 'defined') | selectattr('nfs_export') | list | length > 0
+
+- name: Configure NFS exports
+  become: yes
+  ansible.builtin.lineinfile:
+    path: /etc/exports
+    regexp: "^{{ item.path }}\\s"
+    line: "{{ item.path }} {{ item.nfs_clients | default('*(rw,sync,no_subtree_check,no_root_squash)') }}"
+    state: present
+  loop: "{{ host_mounts[inventory_hostname] | default([]) }}"
+  when: item.nfs_export | default(false)
+  notify: Reload NFS exports
+
+- name: Ensure NFS server is running
+  become: yes
+  ansible.builtin.systemd:
+    name: nfs-kernel-server
+    state: started
+    enabled: yes
+  when: host_mounts[inventory_hostname] | default([]) | selectattr('nfs_export', 'defined') | selectattr('nfs_export') | list | length > 0

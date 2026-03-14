@@ -7,4 +7,5 @@ host_mounts:
       path: /mnt/hdd0
       fstype: ext4
       opts: defaults
+      nfs_export: false
 
