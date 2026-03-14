@@ -9,6 +9,16 @@
     msg: "k0sctl is not installed on localhost. Please install it first."
   when: k0sctl_check.rc != 0
 
+- name: Add all host key types to known_hosts
+  shell: |
+    ssh-keyscan {{ hostvars[item].ansible_host }} 2>/dev/null | while IFS= read -r key; do
+      [[ -z "$key" || "$key" == \#* ]] && continue
+      grep -qF "$key" ~/.ssh/known_hosts 2>/dev/null || echo "$key" >> ~/.ssh/known_hosts
+    done
+  loop: "{{ groups['all'] }}"
+  delegate_to: localhost
+  changed_when: false
+
 - name: Render k0sctl config
   template:
     src: k0sctl.yaml.j2
