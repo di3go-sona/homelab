@@ -1,3 +1,10 @@
 # homelab_user: homelab
 k0s_kubeconfig_file: ~/.kube/config.homelab
 
+host_mounts:
+  pi-delta.lan:
+    - uuid: 863e9ca8-746f-4214-9f8b-2aa3e13f4055
+      path: /mnt/hdd0
+      fstype: ext4
+      opts: defaults
+

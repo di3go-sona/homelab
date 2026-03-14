@@ -1,0 +1,17 @@
+- name: Create mount point directories
+  become: yes
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: '0755'
+  loop: "{{ host_mounts[inventory_hostname] | default([]) }}"
+
+- name: Mount volumes
+  become: yes
+  ansible.posix.mount:
+    src: "UUID={{ item.uuid }}"
+    path: "{{ item.path }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.opts | default('defaults') }}"
+    state: mounted
+  loop: "{{ host_mounts[inventory_hostname] | default([]) }}"

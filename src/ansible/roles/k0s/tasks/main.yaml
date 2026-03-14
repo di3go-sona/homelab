@@ -33,7 +33,7 @@
   ignore_errors: true
 
 - name: Apply k0s cluster configuration
-  command: k0sctl apply --config "{{ playbook_dir }}/k0sctl.yaml" --no-wait --debug
+  command: k0sctl apply --config "{{ playbook_dir }}/k0sctl.yaml" --debug
   delegate_to: localhost
 
 - name: Get kubeconfig

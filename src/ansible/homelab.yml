@@ -2,6 +2,7 @@
   hosts: all
   roles:
     - role: base
+    - role: mounts
 
 - name: Setup kubernetes cluster
   hosts: localhost
