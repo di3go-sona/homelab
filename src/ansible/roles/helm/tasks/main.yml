@@ -1,7 +1,7 @@
 ---
-- name: Check if ArgoCD already manages Cilium
+- name: Check if Cilium is already installed
   command:
-    cmd: kubectl --kubeconfig {{ k0s_kubeconfig_file }} get application cilium -n argocd
+    cmd: helm status cilium --namespace kube-system --kubeconfig {{ k0s_kubeconfig_file }}
   register: argocd_cilium_check
   failed_when: false
   changed_when: false
@@ -26,9 +26,9 @@
   changed_when: true
   when: argocd_cilium_check.rc != 0
 
-- name: Check if ArgoCD already manages itself
+- name: Check if ArgoCD is already installed
   command:
-    cmd: kubectl --kubeconfig {{ k0s_kubeconfig_file }} get application argocd -n argocd
+    cmd: helm status argocd --namespace argocd --kubeconfig {{ k0s_kubeconfig_file }}
   register: argocd_self_check
   failed_when: false
   changed_when: false

@@ -9,4 +9,5 @@
   roles:
     - role: k0s
     - role: helm
+      tags: helm
       
