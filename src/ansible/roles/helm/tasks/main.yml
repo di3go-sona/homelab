@@ -28,7 +28,7 @@
 
 - name: Check if ArgoCD is already installed
   command:
-    cmd: helm status argocd --namespace argocd --kubeconfig {{ k0s_kubeconfig_file }}
+    cmd: kubectl --kubeconfig {{ k0s_kubeconfig_file }} get deployment argocd-server -n argocd
   register: argocd_self_check
   failed_when: false
   changed_when: false
