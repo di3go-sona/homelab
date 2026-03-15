@@ -6,16 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/argoproj/argo-helm.git
-    targetRevision: argo-cd-6.7.11
-    path: charts/argo-cd
-    helm:
-      values: |
-        configs:
-          cm:
-            users.anonymous.enabled: "true"
-          rbac:
-            policy.default: "role:admin"
+    repoURL: https://github.com/di3go-sona/homelab.git
+    targetRevision: main
+    path: src/argo/argocd
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
