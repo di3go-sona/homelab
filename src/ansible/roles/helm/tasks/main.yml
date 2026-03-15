@@ -54,7 +54,7 @@
 
 - name: Wait for ArgoCD server to be ready
   command:
-    cmd: kubectl --kubeconfig {{ k0s_kubeconfig_file }} rollout status deployment/argocd-server -n argocd --timeout=120s
+    cmd: kubectl --kubeconfig {{ k0s_kubeconfig_file }} rollout status deployment/argocd-server -n argocd --timeout=360s
   changed_when: false
 
 - name: Bootstrap app-of-apps

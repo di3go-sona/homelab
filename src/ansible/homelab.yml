@@ -2,12 +2,15 @@
   hosts: all
   roles:
     - role: base
+      tags: base
     - role: mounts
+      tags: mounts
 
 - name: Setup kubernetes cluster
   hosts: localhost
   roles:
     - role: k0s
+      tags: k0s
     - role: helm
       tags: helm
       
