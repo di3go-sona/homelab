@@ -1,19 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cilium
+  name: media
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-wave: "3"
 spec:
   project: default
   source:
     repoURL: https://github.com/di3go-sona/homelab.git
     targetRevision: main
-    path: src/argo/apps/cilium/resources
+    path: src/argo/apps/media/resources
   destination:
     server: https://kubernetes.default.svc
-    namespace: kube-system
+    namespace: media
   syncPolicy:
     automated:
       prune: true

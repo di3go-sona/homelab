@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cilium
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: https://helm.cilium.io/
+    chart: cilium
+    targetRevision: 1.15.5
+    helm:
+      parameters:
+        - name: kubeProxyReplacement
+          value: "true"
+        - name: k8sServiceHost
+          value: "192.168.8.15"
+        - name: k8sServicePort
+          value: "6443"
+        - name: l2announcements.enabled
+          value: "true"
+        - name: l2announcements.leaseDuration
+          value: 3s
+        - name: l2announcements.renewDeadline
+          value: 1s
+        - name: l2announcements.retryPeriod
+          value: 200ms
+        - name: externalIPs.enabled
+          value: "true"
+        - name: ingressController.enabled
+          value: "true"
+        - name: ingressController.loadbalancerMode
+          value: shared
+        - name: ingressController.service.annotations.lbipam\.cilium\.io/ips
+          value: "192.168.8.20"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
