@@ -1,20 +1,32 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet
 metadata:
   name: app-of-apps
   namespace: argocd
 spec:
-  project: default
-  source:
-    repoURL: https://github.com/di3go-sona/homelab.git
-    targetRevision: main
-    path: src/argo/apps
-    directory:
-      recurse: true
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: argocd
+  generators:
+    - git:
+        repoURL: https://github.com/di3go-sona/homelab.git
+        revision: main
+        directories:
+          - path: src/argo/apps/*
+  template:
+    metadata:
+      name: '{{path.basename}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/di3go-sona/homelab.git
+        targetRevision: main
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{path.basename}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+    preserveResourcesOnDeletion: false
