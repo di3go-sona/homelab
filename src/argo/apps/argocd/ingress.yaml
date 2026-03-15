@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
   name: argocd
   namespace: argocd
+  annotations:
+    ingress.cilium.io/force-https: "disabled"
 spec:
   ingressClassName: cilium
   rules:

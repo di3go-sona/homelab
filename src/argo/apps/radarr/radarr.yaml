@@ -86,6 +86,8 @@ kind: Ingress
 metadata:
   name: radarr
   namespace: radarr
+  annotations:
+    ingress.cilium.io/force-https: "disabled"
 spec:
   ingressClassName: cilium
   rules:
