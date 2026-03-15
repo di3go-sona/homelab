@@ -57,7 +57,7 @@
     cmd: kubectl --kubeconfig {{ k0s_kubeconfig_file }} rollout status deployment/argocd-server -n argocd --timeout=360s
   changed_when: false
 
-- name: Bootstrap app-of-apps
+- name: Bootstrap root ApplicationSet
   command:
     cmd: kubectl --kubeconfig {{ k0s_kubeconfig_file }} apply -f {{ playbook_dir }}/../../src/argo/app-of-apps.yaml
   changed_when: true

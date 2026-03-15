@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: app-of-apps
+  name: root
   namespace: argocd
 spec:
   generators:
@@ -12,7 +12,7 @@ spec:
           - path: src/argo/apps/*
   template:
     metadata:
-      name: '{{path.basename}}'
+      name: '{{path.basename}}-root'
     spec:
       project: default
       source:
