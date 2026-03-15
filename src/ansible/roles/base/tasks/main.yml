@@ -1,3 +1,10 @@
+- name: Ensure systemd-timesyncd is enabled and synced
+  become: yes
+  ansible.builtin.systemd:
+    name: systemd-timesyncd
+    state: restarted
+    enabled: yes
+
 - name: Update all packages to the latest version
   become: yes
   ansible.builtin.apt:
