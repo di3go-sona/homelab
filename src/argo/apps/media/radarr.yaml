@@ -1,13 +1,8 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: sonarr
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: sonarr-config
-  namespace: sonarr
+  name: radarr-config
+  namespace: media
 spec:
   accessModes:
     - ReadWriteMany
@@ -16,54 +11,26 @@ spec:
     requests:
       storage: 1Gi
 ---
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: pv-sonarr-data
-spec:
-  capacity:
-    storage: 10Ti
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: 192.168.8.13
-    path: /mnt/hdd0
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: sonarr-data
-  namespace: sonarr
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 10Ti
-  volumeName: pv-sonarr-data
-  storageClassName: ""
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sonarr
-  namespace: sonarr
+  name: radarr
+  namespace: media
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sonarr
+      app: radarr
   template:
     metadata:
       labels:
-        app: sonarr
+        app: radarr
     spec:
       containers:
-        - name: sonarr
-          image: lscr.io/linuxserver/sonarr:latest
+        - name: radarr
+          image: lscr.io/linuxserver/radarr:latest
           ports:
-            - containerPort: 8989
+            - containerPort: 7878
           env:
             - name: PUID
               value: "1000"
@@ -79,40 +46,40 @@ spec:
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName: sonarr-config
+            claimName: radarr-config
         - name: data
           persistentVolumeClaim:
-            claimName: sonarr-data
+            claimName: media-data
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: sonarr
-  namespace: sonarr
+  name: radarr
+  namespace: media
 spec:
   selector:
-    app: sonarr
+    app: radarr
   ports:
     - port: 80
-      targetPort: 8989
+      targetPort: 7878
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: sonarr
-  namespace: sonarr
+  name: radarr
+  namespace: media
   annotations:
     ingress.cilium.io/force-https: "disabled"
 spec:
   ingressClassName: cilium
   rules:
-    - host: sonarr.patat.in
+    - host: radarr.patat.in
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: sonarr
+                name: radarr
                 port:
                   number: 80
