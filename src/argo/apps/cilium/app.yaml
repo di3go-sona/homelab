@@ -19,6 +19,12 @@ spec:
           value: "6443"
         - name: l2announcements.enabled
           value: "true"
+        - name: l2announcements.leaseDuration
+          value: 3s
+        - name: l2announcements.renewDeadline
+          value: 1s
+        - name: l2announcements.retryPeriod
+          value: 200ms
         - name: externalIPs.enabled
           value: "true"
         - name: ingressController.enabled
