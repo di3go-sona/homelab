@@ -8,9 +8,19 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/di3go-sona/homelab.git
-    targetRevision: main
-    path: src/argo/apps/nfs-csi/resources
+    repoURL: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
+    chart: csi-driver-nfs
+    targetRevision: v4.9.0
+    helm:
+      values: |
+        storageClass:
+          create: true
+          name: nfs-csi
+          parameters:
+            server: "192.168.8.13"
+            share: "/mnt/hdd0"
+          reclaimPolicy: Delete
+          volumeBindingMode: Immediate
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system

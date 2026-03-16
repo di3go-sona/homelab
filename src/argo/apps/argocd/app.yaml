@@ -7,10 +7,23 @@ metadata:
     argocd.argoproj.io/sync-wave: "-1"
 spec:
   project: default
-  source:
-    repoURL: https://github.com/di3go-sona/homelab.git
-    targetRevision: main
-    path: src/argo/apps/argocd/resources
+  sources:
+    - repoURL: https://github.com/argoproj/argo-helm.git
+      targetRevision: argo-cd-6.7.11
+      path: charts/argo-cd
+      helm:
+        values: |
+          configs:
+            cm:
+              users.anonymous.enabled: "true"
+            rbac:
+              policy.default: "role:admin"
+          server:
+            extraArgs:
+              - --insecure
+    - repoURL: https://github.com/di3go-sona/homelab.git
+      targetRevision: main
+      path: src/argo/apps/argocd/resources
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
