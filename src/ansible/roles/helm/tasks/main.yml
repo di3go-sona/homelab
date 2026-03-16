@@ -1,7 +1,7 @@
 ---
 - name: Check if Cilium is already installed
   command:
-    cmd: helm status cilium --namespace kube-system --kubeconfig {{ k0s_kubeconfig_file }}
+    cmd: helm status cilium --namespace cilium --kubeconfig {{ k0s_kubeconfig_file }}
   register: argocd_cilium_check
   failed_when: false
   changed_when: false
@@ -17,7 +17,7 @@
     cmd: >
       helm upgrade --install cilium cilium/cilium
       --version 1.15.5
-      --namespace kube-system
+      --namespace cilium
       --create-namespace
       --kubeconfig {{ k0s_kubeconfig_file }}
       --set kubeProxyReplacement=true
