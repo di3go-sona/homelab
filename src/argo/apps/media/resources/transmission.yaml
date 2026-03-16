@@ -41,6 +41,12 @@ spec:
               value: "1000"
             - name: TZ
               value: Europe/Rome
+            - name: TRANSMISSION_DOWNLOAD_DIR
+              value: /data
+            - name: TRANSMISSION_INCOMPLETE_DIR
+              value: /data/.incomplete
+            - name: TRANSMISSION_WATCH_DIR
+              value: /data/.watch
           volumeMounts:
             - name: config
               mountPath: /config
