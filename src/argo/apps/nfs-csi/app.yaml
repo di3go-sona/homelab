@@ -18,7 +18,7 @@ spec:
           name: nfs-csi
           parameters:
             server: "192.168.8.13"
-            share: "/mnt/hdd0"
+            share: "/mnt/hdd0/homelab"
           reclaimPolicy: Delete
           volumeBindingMode: Immediate
   destination:
