@@ -36,11 +36,12 @@
     reboot_timeout: 600
   when: update_result.changed or cgroup_update_result.changed
 
-# - name: Ensure required packages are installed
-#   become: yes
-#   ansible.builtin.apt:
-#     name:
-#       - curl
-#       - wget
-#       - vim
-#       - python3
+- name: Ensure required packages are installed
+  become: yes
+  ansible.builtin.apt:
+    name:
+      - curl
+      - wget
+      - vim
+      - python3
+      - nfs-common
