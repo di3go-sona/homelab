@@ -70,7 +70,7 @@ metadata:
   namespace: media
   annotations:
     ingress.cilium.io/force-https: "disabled"
-    ingress.cilium.io/request-timeout: "300s"
+    ingress.cilium.io/request-timeout: "300"
 spec:
   ingressClassName: cilium
   rules:
