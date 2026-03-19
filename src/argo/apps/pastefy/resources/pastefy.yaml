@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pastefy-db
+  namespace: pastefy
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-csi
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pastefy
+  namespace: pastefy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pastefy
+  template:
+    metadata:
+      labels:
+        app: pastefy
+    spec:
+      containers:
+        - name: mariadb
+          image: mariadb:10.11
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: pastefy
+            - name: MYSQL_DATABASE
+              value: pastefy
+            - name: MYSQL_USER
+              value: pastefy
+            - name: MYSQL_PASSWORD
+              value: pastefy
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/mysql
+        - name: pastefy
+          image: interaapps/pastefy:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: HTTP_SERVER_PORT
+              value: "80"
+            - name: HTTP_SERVER_CORS
+              value: "*"
+            - name: DATABASE_DRIVER
+              value: mysql
+            - name: DATABASE_NAME
+              value: pastefy
+            - name: DATABASE_USER
+              value: pastefy
+            - name: DATABASE_PASSWORD
+              value: pastefy
+            - name: DATABASE_HOST
+              value: localhost
+            - name: DATABASE_PORT
+              value: "3306"
+            - name: SERVER_NAME
+              value: "http://paste.patat.in"
+      volumes:
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: pastefy-db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pastefy
+  namespace: pastefy
+spec:
+  selector:
+    app: pastefy
+  ports:
+    - port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pastefy
+  namespace: pastefy
+  annotations:
+    ingress.cilium.io/force-https: "disabled"
+spec:
+  ingressClassName: cilium
+  rules:
+    - host: paste.patat.in
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: pastefy
+                port:
+                  number: 80
