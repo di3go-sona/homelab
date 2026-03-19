@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tidarr-config
+  namespace: media
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-csi
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tidarr
+  namespace: media
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tidarr
+  template:
+    metadata:
+      labels:
+        app: tidarr
+    spec:
+      containers:
+        - name: tidarr
+          image: cstaelen/tidarr:latest
+          ports:
+            - containerPort: 47891
+          env:
+            - name: TZ
+              value: Europe/Rome
+          volumeMounts:
+            - name: config
+              mountPath: /home/node/app/src/standalone
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: tidarr-config
+        - name: data
+          persistentVolumeClaim:
+            claimName: media-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tidarr
+  namespace: media
+spec:
+  selector:
+    app: tidarr
+  ports:
+    - port: 80
+      targetPort: 47891
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tidarr
+  namespace: media
+  annotations:
+    ingress.cilium.io/force-https: "disabled"
+spec:
+  ingressClassName: cilium
+  rules:
+    - host: tidarr.patat.in
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: tidarr
+                port:
+                  number: 80
