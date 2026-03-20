@@ -1,10 +1,10 @@
 - name: Basic setup for all servers
   hosts: all
   roles:
-    - role: base
-      tags: base
-    - role: mounts
-      tags: mounts
+    - role: os
+      tags: os
+    - role: storage
+      tags: storage
 
 - name: Setup kubernetes cluster
   hosts: localhost
