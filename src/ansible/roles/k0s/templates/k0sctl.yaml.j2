@@ -12,6 +12,8 @@ spec:
       noTaints: true
       role: {{ hostvars[host]['cluster_role'] }}
       kubeletRootDir: /var/lib/kubelet
+      installFlags:
+        - --disable-components=metrics-server
 {% endfor %}
   k0s:
     version: v1.35.1+k0s.0
@@ -26,3 +28,4 @@ spec:
           provider: custom
           kubeProxy:
             disabled: true
+
