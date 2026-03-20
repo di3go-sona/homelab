@@ -10,7 +10,7 @@ spec:
         address: {{ hostvars[host]['ansible_host'] }}
         user: {{ hostvars[host]['ansible_user'] }}
       noTaints: true
-      role: {{ hostvars[host]['cluster_role'] }}
+      role: {{ 'controller+worker' if host in groups['controllers'] else 'worker' }}
       kubeletRootDir: /var/lib/kubelet
       installFlags:
         - --disable-components=metrics-server

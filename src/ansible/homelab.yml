@@ -6,6 +6,12 @@
     - role: storage
       tags: storage
 
+- name: Configure VIP for k0s controllers
+  hosts: controllers
+  roles:
+    - role: keepalived
+      tags: keepalived
+
 - name: Setup kubernetes cluster
   hosts: localhost
   roles:
