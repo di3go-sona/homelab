@@ -35,6 +35,8 @@ spec:
             value: shared
           - name: ingressController.service.annotations.lbipam\.cilium\.io/ips
             value: "192.168.8.20"
+          - name: cni.exclusive
+            value: "false"
     - repoURL: https://github.com/di3go-sona/homelab.git
       targetRevision: main
       path: src/argo/apps/cilium/resources

@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: multus
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2.5"
+spec:
+  project: default
+  sources:
+    - repoURL: https://github.com/di3go-sona/homelab.git
+      targetRevision: main
+      path: src/argo/apps/multus/resources
+      directory:
+        recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
