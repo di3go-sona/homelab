@@ -3,4 +3,4 @@ kind: Namespace
 metadata:
   name: multus
   annotations:
-    argocd.argoproj.io/sync-wave: "-2.5"
+    argocd.argoproj.io/sync-wave: "-2"
