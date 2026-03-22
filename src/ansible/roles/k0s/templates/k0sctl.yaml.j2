@@ -13,7 +13,7 @@ spec:
       role: {{ 'controller+worker' if host in groups['controllers'] else 'worker' }}
       kubeletRootDir: /var/lib/kubelet
       installFlags:
-        - --disable-components=metrics-server
+        - --disable-components=konnectivity-server
 {% endfor %}
   k0s:
     version: v1.35.1+k0s.0

@@ -41,6 +41,19 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: cilium
+  ignoreDifferences:
+    - kind: Secret
+      name: cilium-ca
+      jsonPointers:
+        - /data
+    - kind: Secret
+      name: hubble-server-certs
+      jsonPointers:
+        - /data
+    - kind: Service
+      name: cilium-ingress
+      jqPathExpressions:
+        - .spec.ports[].nodePort
   syncPolicy:
     # automated:
     #   prune: true

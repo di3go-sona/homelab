@@ -2,4 +2,4 @@
 
 venv/
 k0sctl.yaml
-k0s_backup_*
+k0s_backup*
