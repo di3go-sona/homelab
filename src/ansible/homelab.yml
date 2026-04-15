@@ -5,6 +5,8 @@
       tags: os
     - role: storage
       tags: storage
+    - role: netbird
+      tags: netbird
 
 - name: Setup kubernetes cluster
   hosts: localhost
@@ -13,4 +15,3 @@
       tags: k0s
     - role: helm
       tags: helm
-      

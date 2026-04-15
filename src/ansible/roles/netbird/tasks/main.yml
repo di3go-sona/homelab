@@ -1,0 +1,27 @@
+- name: Check if Netbird is installed
+  ansible.builtin.stat:
+    path: /usr/bin/netbird
+  register: netbird_binary
+  when: 
+  - netbird[inventory_hostname] is defined
+
+- name: Install Netbird
+  become: yes
+  ansible.builtin.shell: curl -fsSL https://pkgs.netbird.io/install.sh | sh
+  when: 
+  - netbird[inventory_hostname] is defined
+  - netbird_binary and not netbird_binary.stat.exists
+
+- name: Disconnect Netbird
+  become: yes
+  ansible.builtin.shell: netbird down
+  when: 
+  - netbird[inventory_hostname] is defined
+
+- name: Connect to Netbird with setup key
+  become: yes
+  ansible.builtin.shell: >-
+    netbird up --setup-key {{ netbird[inventory_hostname].setup_key }}
+    {{ '--allow-server-ssh --disable-ssh-auth --enable-ssh-root' if netbird[inventory_hostname].ssh | default(false) else '' }}
+  when: 
+  - netbird[inventory_hostname] is defined
