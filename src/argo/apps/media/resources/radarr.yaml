@@ -71,8 +71,13 @@ metadata:
   annotations:
     ingress.cilium.io/force-https: "disabled"
     ingress.cilium.io/request-timeout: "300"
+    cert-manager.io/cluster-issuer: letsencrypt-production
 spec:
   ingressClassName: cilium
+  tls:
+    - hosts:
+        - radarr.patat.in
+      secretName: radarr-patat-in-tls
   rules:
     - host: radarr.patat.in
       http:

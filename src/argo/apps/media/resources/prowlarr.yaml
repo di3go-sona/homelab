@@ -65,8 +65,13 @@ metadata:
   namespace: media
   annotations:
     ingress.cilium.io/force-https: "disabled"
+    cert-manager.io/cluster-issuer: letsencrypt-production
 spec:
   ingressClassName: cilium
+  tls:
+    - hosts:
+        - prowlarr.patat.in
+      secretName: prowlarr-patat-in-tls
   rules:
     - host: prowlarr.patat.in
       http:

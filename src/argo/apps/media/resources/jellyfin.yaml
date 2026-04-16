@@ -70,8 +70,13 @@ metadata:
   namespace: media
   annotations:
     ingress.cilium.io/force-https: "disabled"
+    cert-manager.io/cluster-issuer: letsencrypt-production
 spec:
   ingressClassName: cilium
+  tls:
+    - hosts:
+        - jellyfin.patat.in
+      secretName: jellyfin-patat-in-tls
   rules:
     - host: jellyfin.patat.in
       http:
