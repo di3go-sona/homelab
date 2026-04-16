@@ -11,18 +11,6 @@ spec:
     requests:
       storage: 1Gi
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: dashy-config
-  namespace: dashy
-data:
-  conf.yml: |
-    appConfig: {}
-    pageInfo:
-      title: Dashy
-    sections: []
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -38,11 +26,18 @@ spec:
       labels:
         app: dashy
     spec:
+      initContainers:
+        - name: init-config
+          image: busybox
+          command: ['sh', '-c', 'if [ ! -f /app/user-data/conf.yml ]; then echo "appConfig: {}\npageInfo:\n  title: Dashy\nsections: []" > /app/user-data/conf.yml; fi']
+          volumeMounts:
+            - name: config
+              mountPath: /app/user-data
       containers:
         - name: dashy
           image: lissy93/dashy:latest
           ports:
-            - containerPort: 80
+            - containerPort: 8080
           env:
             - name: UID
               value: "1000"
@@ -50,12 +45,11 @@ spec:
               value: "1000"
           volumeMounts:
             - name: config
-              mountPath: /app/user-data/conf.yml
-              subPath: conf.yml
+              mountPath: /app/user-data
       volumes:
         - name: config
-          configMap:
-            name: dashy-config
+          persistentVolumeClaim:
+            claimName: dashy-config
 ---
 apiVersion: v1
 kind: Service
@@ -67,7 +61,7 @@ spec:
     app: dashy
   ports:
     - port: 80
-      targetPort: 80
+      targetPort: 8080
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
