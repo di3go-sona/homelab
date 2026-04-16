@@ -15,6 +15,10 @@ spec:
         parameters:
           - name: installCRDs
             value: "true"
+          - name: extraArgs[0]
+            value: --dns01-recursive-nameservers=192.168.8.1:53
+          - name: extraArgs[1]
+            value: --dns01-recursive-nameservers-only=true
     - repoURL: https://github.com/di3go-sona/homelab.git
       targetRevision: main
       path: src/argo/apps/cert-manager/resources
