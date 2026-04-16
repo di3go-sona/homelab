@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dashy-config
+  namespace: dashy
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-csi
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dashy-config
+  namespace: dashy
+data:
+  conf.yml: |
+    appConfig: {}
+    pageInfo:
+      title: Dashy
+    sections: []
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashy
+  namespace: dashy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dashy
+  template:
+    metadata:
+      labels:
+        app: dashy
+    spec:
+      containers:
+        - name: dashy
+          image: lissy93/dashy:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: UID
+              value: "1000"
+            - name: GID
+              value: "1000"
+          volumeMounts:
+            - name: config
+              mountPath: /app/user-data/conf.yml
+              subPath: conf.yml
+      volumes:
+        - name: config
+          configMap:
+            name: dashy-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashy
+  namespace: dashy
+spec:
+  selector:
+    app: dashy
+  ports:
+    - port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dashy
+  namespace: dashy
+  annotations:
+    ingress.cilium.io/force-https: "disabled"
+    cert-manager.io/cluster-issuer: letsencrypt-production
+spec:
+  ingressClassName: cilium
+  tls:
+    - hosts:
+        - patat.in
+      secretName: patat-in-tls
+  rules:
+    - host: patat.in
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: dashy
+                port:
+                  number: 80
