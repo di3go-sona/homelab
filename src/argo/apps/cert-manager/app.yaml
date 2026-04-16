@@ -1,21 +1,26 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: multus
+  name: cert-manager
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/sync-wave: "-2"
 spec:
   project: default
   sources:
+    - repoURL: https://charts.jetstack.io/
+      chart: cert-manager
+      targetRevision: v1.15.1
+      helm:
+        parameters:
+          - name: installCRDs
+            value: "true"
     - repoURL: https://github.com/di3go-sona/homelab.git
       targetRevision: main
-      path: src/argo/apps/multus/resources
-      directory:
-        recurse: true
+      path: src/argo/apps/cert-manager/resources
   destination:
     server: https://kubernetes.default.svc
-    namespace: kube-system
+    namespace: cert-manager
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
