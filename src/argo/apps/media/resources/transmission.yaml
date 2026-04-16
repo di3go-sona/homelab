@@ -87,13 +87,12 @@ metadata:
   namespace: media
   annotations:
     ingress.cilium.io/force-https: "disabled"
-    cert-manager.io/cluster-issuer: letsencrypt-production
 spec:
   ingressClassName: cilium
   tls:
     - hosts:
         - transmission.patat.in
-      secretName: transmission-patat-in-tls
+      secretName: wildcard-patat-in-tls
   rules:
     - host: transmission.patat.in
       http:

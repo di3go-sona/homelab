@@ -70,13 +70,12 @@ metadata:
   namespace: dashy
   annotations:
     ingress.cilium.io/force-https: "disabled"
-    cert-manager.io/cluster-issuer: letsencrypt-production
 spec:
   ingressClassName: cilium
   tls:
     - hosts:
         - patat.in
-      secretName: patat-in-tls
+      secretName: wildcard-patat-in-tls
   rules:
     - host: patat.in
       http:

@@ -70,13 +70,12 @@ metadata:
   namespace: media
   annotations:
     ingress.cilium.io/force-https: "disabled"
-    cert-manager.io/cluster-issuer: letsencrypt-production
 spec:
   ingressClassName: cilium
   tls:
     - hosts:
         - bazarr.patat.in
-      secretName: bazarr-patat-in-tls
+      secretName: wildcard-patat-in-tls
   rules:
     - host: bazarr.patat.in
       http:
