@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: homeassistant-config
+  namespace: homeassistant
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-csi
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homeassistant
+  namespace: homeassistant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homeassistant
+  template:
+    metadata:
+      labels:
+        app: homeassistant
+      annotations:
+        k8s.v1.cni.cncf.io/networks: |
+          [{
+            "name": "macpool",
+            "namespace": "multus",
+            "ips": ["192.168.8.80/24"]
+          }]
+    spec:
+      containers:
+        - name: homeassistant
+          image: homeassistant/home-assistant:latest
+          ports:
+            - containerPort: 8123
+          env:
+            - name: TZ
+              value: Europe/Rome
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: homeassistant-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: homeassistant
+  namespace: homeassistant
+spec:
+  selector:
+    app: homeassistant
+  ports:
+    - port: 80
+      targetPort: 8123
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: homeassistant
+  namespace: homeassistant
+  annotations:
+    ingress.cilium.io/force-https: "disabled"
+spec:
+  ingressClassName: cilium
+  tls:
+    - hosts:
+        - homeassistant.patat.in
+      secretName: wildcard-patat-in-tls
+  rules:
+    - host: homeassistant.patat.in
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: homeassistant
+                port:
+                  number: 80

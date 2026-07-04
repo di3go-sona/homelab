@@ -5,3 +5,4 @@ k0sctl.yaml
 k0s_backup*
 secrets.yaml
 secret.yaml
+.opencode/plans/add-argo-homeassistant-esphome.md

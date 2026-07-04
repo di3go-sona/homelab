@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: esphome-config
+  namespace: esphome
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-csi
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: esphome
+  namespace: esphome
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: esphome
+  template:
+    metadata:
+      labels:
+        app: esphome
+    spec:
+      containers:
+        - name: esphome
+          image: esphome/esphome:latest
+          ports:
+            - containerPort: 6052
+          env:
+            - name: TZ
+              value: Europe/Rome
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: esphome-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: esphome
+  namespace: esphome
+spec:
+  selector:
+    app: esphome
+  ports:
+    - port: 80
+      targetPort: 6052
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: esphome
+  namespace: esphome
+  annotations:
+    ingress.cilium.io/force-https: "disabled"
+spec:
+  ingressClassName: cilium
+  tls:
+    - hosts:
+        - esphome.patat.in
+      secretName: wildcard-patat-in-tls
+  rules:
+    - host: esphome.patat.in
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: esphome
+                port:
+                  number: 80

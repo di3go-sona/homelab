@@ -31,6 +31,8 @@ All apps are deployed via ArgoCD and live in `src/argo/apps/`.
 | **Radarr** | `radarr.patat.in` | Movie management |
 | **Prowlarr** | `prowlarr.patat.in` | Indexer manager |
 | **FlareSolverr** | — | Cloudflare bypass proxy |
+| **Home Assistant** | `homeassistant.patat.in` | Home automation, multus macvlan @ 192.168.8.80 for mDNS |
+| **ESPHome** | `esphome.patat.in` | ESP8266/ESP32 firmware builder |
 
 All media apps share a 10Ti NFS-backed PVC mounted at `/data`.
 
@@ -109,6 +111,8 @@ homelab/
 │           ├── argocd/              # ArgoCD self-management
 │           ├── cilium/              # CNI + L2 load balancer
 │           ├── nfs-csi/             # NFS storage class
+│           ├── homeassistant/        # Home Assistant (multus macvlan for mDNS)
+│           ├── esphome/              # ESPHome firmware builder
 │           └── media/               # Media stack (Jellyfin, *arr, etc.)
 └── stl/                             # 3D printing files
     ├── knobs/                       # Metric knobs M5–M12
