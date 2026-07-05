@@ -1,6 +1,6 @@
 # Homelab Infrastructure
 
-An Ansible + GitOps automation project for managing a Raspberry Pi Kubernetes cluster, using k0s, ArgoCD, and Cilium.
+An Ansible + GitOps automation project for managing a mixed-architecture Kubernetes cluster (3 Raspberry Pi + 1 x86_64), using k0s, ArgoCD, and Cilium.
 
 ## 🏗️ Architecture
 
@@ -11,6 +11,7 @@ An Ansible + GitOps automation project for managing a Raspberry Pi Kubernetes cl
 | `pi-delta.lan` | 192.168.8.13 | controller+worker, NFS storage |
 | `pi-epsilon.lan` | 192.168.8.14 | controller+worker |
 | `pi-gamma.lan` | 192.168.8.15 | controller+worker, k8s API endpoint |
+| `htpc.lan` | 192.168.8.18 | worker (x86_64, CachyOS) |
 
 **Kubernetes**: [k0s](https://k0sproject.io/) v1.35.1  
 **GitOps**: ArgoCD — all apps managed declaratively from this repo  
@@ -31,10 +32,28 @@ All apps are deployed via ArgoCD and live in `src/argo/apps/`.
 | **Radarr** | `radarr.patat.in` | Movie management |
 | **Prowlarr** | `prowlarr.patat.in` | Indexer manager |
 | **FlareSolverr** | — | Cloudflare bypass proxy |
-| **Home Assistant** | `homeassistant.patat.in` | Home automation, multus macvlan @ 192.168.8.80 for mDNS |
+| **Home Assistant** | `homeassistant.patat.in` | Home automation, multus macvlan @ 192.168.8.80 for mDNS. Custom integrations (e.g. [tuya-local](https://github.com/make-all/tuya-local)) managed manually via HACS — see below |
 | **ESPHome** | `esphome.patat.in` | ESP8266/ESP32 firmware builder |
 
 All media apps share a 10Ti NFS-backed PVC mounted at `/data`.
+
+### Home Assistant custom integrations
+
+Custom integrations (HACS, tuya-local, etc.) live on the HA config PVC at `/config/custom_components/` and are **not tracked in git** — they are installed and managed manually via [HACS](https://hacs.xyz).
+
+**One-time HACS bootstrap** (into the running pod):
+
+```bash
+kubectl exec -n homeassistant deployment/homeassistant -- sh -c \
+  "apk add --no-cache unzip && mkdir -p /config/custom_components/hacs && \
+   wget -qO /tmp/hacs.zip https://github.com/hacs/integration/releases/download/2.0.5/hacs.zip && \
+   unzip -o /tmp/hacs.zip -d /config/custom_components/hacs && rm /tmp/hacs.zip"
+kubectl delete pod -n homeassistant -l app=homeassistant   # restart HA
+```
+
+Then in HA UI: **Settings → Devices & Services → Add Integration → HACS**, authenticate with a GitHub Personal Access Token.
+
+**Installing tuya-local**: HACS → Integrations → Add custom repository → `https://github.com/make-all/tuya-local` (category: Integration) → Install → restart HA. Configure devices via Add Integration → "Tuya Local".
 
 ## 📋 Prerequisites
 

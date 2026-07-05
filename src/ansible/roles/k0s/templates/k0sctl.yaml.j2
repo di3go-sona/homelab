@@ -9,8 +9,13 @@ spec:
     - ssh:
         address: {{ hostvars[host]['ansible_host'] }}
         user: {{ hostvars[host]['ansible_user'] }}
+{% if host in groups['controllers'] %}
       noTaints: true
-      role: {{ 'controller+worker' if host in groups['controllers'] else 'worker' }}
+      role: controller+worker
+      privateAddress: {{ hostvars[host]['ansible_host'] }}
+{% else %}
+      role: worker
+{% endif %}
       kubeletRootDir: /var/lib/kubelet
       installFlags:
         - --disable-components=konnectivity-server

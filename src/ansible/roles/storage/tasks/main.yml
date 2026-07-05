@@ -16,13 +16,24 @@
     state: mounted
   loop: "{{ host_mounts[inventory_hostname] | default([]) }}"
 
-- name: Install NFS server
+- name: Install NFS server (Debian)
   become: yes
   ansible.builtin.apt:
     name: nfs-kernel-server
     state: present
     update_cache: yes
-  when: host_mounts[inventory_hostname] | default([]) | selectattr('nfs_export', 'defined') | selectattr('nfs_export') | list | length > 0
+  when:
+    - ansible_os_family == "Debian"
+    - host_mounts[inventory_hostname] | default([]) | selectattr('nfs_export', 'defined') | selectattr('nfs_export') | list | length > 0
+
+- name: Install NFS server (Arch)
+  become: yes
+  ansible.builtin.package:
+    name: nfs-utils
+    state: present
+  when:
+    - ansible_os_family == "Archlinux"
+    - host_mounts[inventory_hostname] | default([]) | selectattr('nfs_export', 'defined') | selectattr('nfs_export') | list | length > 0
 
 - name: Configure NFS exports
   become: yes
@@ -38,7 +49,7 @@
 - name: Ensure NFS server is running
   become: yes
   ansible.builtin.systemd:
-    name: nfs-kernel-server
+    name: "{{ 'nfs-kernel-server' if ansible_os_family == 'Debian' else 'nfs-server' }}"
     state: started
     enabled: yes
   when: host_mounts[inventory_hostname] | default([]) | selectattr('nfs_export', 'defined') | selectattr('nfs_export') | list | length > 0
