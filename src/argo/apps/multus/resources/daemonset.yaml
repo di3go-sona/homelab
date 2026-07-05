@@ -52,9 +52,7 @@ rules:
       - pods/status
     verbs:
       - get
-      - list
       - update
-      - watch
   - apiGroups:
       - ""
       - events.k8s.io
@@ -107,66 +105,43 @@ spec:
         name: multus
     spec:
       hostNetwork: true
-      hostPID: true
       tolerations:
-        - operator: Exists
-          effect: NoSchedule
-        - operator: Exists
-          effect: NoExecute
+      - operator: Exists
+        effect: NoSchedule
+      - operator: Exists
+        effect: NoExecute
       serviceAccountName: multus
       containers:
-        - name: kube-multus
-          image: ghcr.io/k8snetworkplumbingwg/multus-cni:snapshot-thick
-          command: [ "/usr/src/multus-cni/bin/multus-daemon" ]
-          resources:
-            requests:
-              cpu: "100m"
-              memory: "50Mi"
-            limits:
-              cpu: "100m"
-              memory: "50Mi"
-          securityContext:
-            privileged: true
-          terminationMessagePolicy: FallbackToLogsOnError
-          volumeMounts:
-            - name: cni
-              mountPath: /host/etc/cni/net.d
-            - name: cnibin
-              mountPath: /opt/cni/bin
-            - name: host-run
-              mountPath: /host/run
-            - name: host-var-lib-cni-multus
-              mountPath: /var/lib/cni/multus
-            - name: host-var-lib-kubelet
-              mountPath: /var/lib/kubelet
-              mountPropagation: HostToContainer
-            - name: host-run-k8s-cni-cncf-io
-              mountPath: /run/k8s.cni.cncf.io
-            - name: host-run-netns
-              mountPath: /run/netns
-              mountPropagation: HostToContainer
-            - name: multus-daemon-config
-              mountPath: /etc/cni/net.d/multus.d
-              readOnly: true
-            - name: hostroot
-              mountPath: /hostroot
-              mountPropagation: HostToContainer
-            - mountPath: /etc/cni/multus/net.d
-              name: multus-conf-dir
-          env:
-            - name: MULTUS_NODE_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
+      - name: kube-multus
+        image: ghcr.io/k8snetworkplumbingwg/multus-cni:snapshot
+        command: ["/thin_entrypoint"]
+        args:
+        - "--multus-conf-file=/tmp/multus-conf/00-multus.conf"
+        - "--cni-conf-dir=/host/etc/cni/net.d"
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "50Mi"
+          limits:
+            cpu: "100m"
+            memory: "50Mi"
+        securityContext:
+          privileged: true
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - name: cni
+          mountPath: /host/etc/cni/net.d
+        - name: cnibin
+          mountPath: /host/opt/cni/bin
+        - name: multus-cfg
+          mountPath: /tmp/multus-conf
       initContainers:
         - name: install-multus-binary
-          image: ghcr.io/k8snetworkplumbingwg/multus-cni:snapshot-thick
-          command:
-            - "/usr/src/multus-cni/bin/install_multus"
-            - "-d"
-            - "/host/opt/cni/bin"
-            - "-t"
-            - "thick"
+          image: ghcr.io/k8snetworkplumbingwg/multus-cni:snapshot
+          command: ["/install_multus"]
+          args:
+            - "--type"
+            - "thin"
           resources:
             requests:
               cpu: "10m"
@@ -186,30 +161,9 @@ spec:
         - name: cnibin
           hostPath:
             path: /opt/cni/bin
-        - name: hostroot
-          hostPath:
-            path: /
-        - name: multus-daemon-config
+        - name: multus-cfg
           configMap:
-            name: multus-daemon-config
+            name: multus-cni-config
             items:
-            - key: daemon-config.json
-              path: daemon-config.json
-        - name: host-run
-          hostPath:
-            path: /run
-        - name: host-var-lib-cni-multus
-          hostPath:
-            path: /var/lib/cni/multus
-        - name: host-var-lib-kubelet
-          hostPath:
-            path: /var/lib/kubelet
-        - name: host-run-k8s-cni-cncf-io
-          hostPath:
-            path: /run/k8s.cni.cncf.io
-        - name: host-run-netns
-          hostPath:
-            path: /run/netns/
-        - name: multus-conf-dir
-          hostPath:
-            path: /etc/cni/multus/net.d
+            - key: cni-conf.json
+              path: 00-multus.conf
