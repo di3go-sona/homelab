@@ -14,5 +14,5 @@ spec:
   secretTemplate:
     annotations:
       reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
-      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "argocd,dashy,media,homeassistant,esphome"
+      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "argocd,dashy,media,homeassistant,esphome,openclaw"
       reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"

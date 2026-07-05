@@ -34,6 +34,7 @@ All apps are deployed via ArgoCD and live in `src/argo/apps/`.
 | **FlareSolverr** | — | Cloudflare bypass proxy |
 | **Home Assistant** | `homeassistant.patat.in` | Home automation, multus macvlan @ 192.168.8.80 for mDNS. Custom integrations (e.g. [tuya-local](https://github.com/make-all/tuya-local)) managed manually via HACS — see below |
 | **ESPHome** | `esphome.patat.in` | ESP8266/ESP32 firmware builder |
+| **OpenClaw** | `openclaw.patat.in` | Personal AI assistant, WebChat UI |
 
 All media apps share a 10Ti NFS-backed PVC mounted at `/data`.
 
