@@ -153,7 +153,7 @@ spec:
               mountPath: /host/opt/cni/bin
               mountPropagation: Bidirectional
         - name: install-cni-plugins
-          image: ghcr.io/containernetworking/plugins:latest
+          image: docker.io/containernetworking/plugins:latest
           command: ['sh', '-c', 'cp /usr/bin/macvlan /host/opt/cni/bin/macvlan 2>/dev/null; cp /usr/bin/bridge /host/opt/cni/bin/bridge 2>/dev/null; cp /usr/bin/dhcp /host/opt/cni/bin/dhcp 2>/dev/null; cp /usr/bin/static /host/opt/cni/bin/static 2>/dev/null; true']
           resources:
             requests:
