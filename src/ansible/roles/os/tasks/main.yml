@@ -45,3 +45,31 @@
       - vim
       - python3
       - nfs-common
+
+- name: Ensure CNI bin directory exists
+  become: yes
+  ansible.builtin.file:
+    path: /opt/cni/bin
+    state: directory
+    mode: '0755'
+
+- name: Check if macvlan CNI plugin is installed
+  become: yes
+  ansible.builtin.stat:
+    path: /opt/cni/bin/macvlan
+  register: macvlan_binary
+
+- name: Download and install CNI plugins
+  become: yes
+  ansible.builtin.unarchive:
+    src: https://github.com/containernetworking/plugins/releases/download/v1.5.1/cni-plugins-linux-arm64-v1.5.1.tgz
+    dest: /opt/cni/bin/
+    remote_src: yes
+    extra_opts:
+      - './macvlan'
+      - './bridge'
+      - './dhcp'
+      - './static'
+      - './host-local'
+      - './portmap'
+  when: not macvlan_binary.stat.exists

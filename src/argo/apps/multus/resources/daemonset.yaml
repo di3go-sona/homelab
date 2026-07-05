@@ -10,6 +10,7 @@ spec:
     singular: network-attachment-definition
     kind: NetworkAttachmentDefinition
     shortNames:
+    - nad
     - net-attach-def
   versions:
     - name: v1
@@ -17,7 +18,7 @@ spec:
       storage: true
       schema:
         openAPIV3Schema:
-          description: 'NetworkAttachmentDefinition is a CRD schema specified by the Network Plumbing Working Group to express the intent for attaching pods to one or more logical or physical networks.'
+          description: 'NetworkAttachmentDefinition is a CRD schema specified by the Network Plumbing Working Group to express the intent for attaching pods to one or more logical or physical networks. More information available at: https://github.com/k8snetworkplumbingwg/multi-net-spec'
           type: object
           properties:
             apiVersion:
@@ -34,14 +35,8 @@ spec:
                   description: 'NetworkAttachmentDefinition config is a JSON-formatted CNI configuration'
                   type: string
 ---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: multus
-  namespace: kube-system
----
-apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: multus
 rules:
@@ -57,7 +52,9 @@ rules:
       - pods/status
     verbs:
       - get
+      - list
       - update
+      - watch
   - apiGroups:
       - ""
       - events.k8s.io
@@ -68,8 +65,8 @@ rules:
       - patch
       - update
 ---
-apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: multus
 roleRef:
@@ -77,7 +74,13 @@ roleRef:
   kind: ClusterRole
   name: multus
 subjects:
-- kind: ServiceAccount
+  - kind: ServiceAccount
+    name: multus
+    namespace: kube-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
   name: multus
   namespace: kube-system
 ---
@@ -104,43 +107,66 @@ spec:
         name: multus
     spec:
       hostNetwork: true
+      hostPID: true
       tolerations:
-      - operator: Exists
-        effect: NoSchedule
-      - operator: Exists
-        effect: NoExecute
+        - operator: Exists
+          effect: NoSchedule
+        - operator: Exists
+          effect: NoExecute
       serviceAccountName: multus
       containers:
-      - name: kube-multus
-        image: ghcr.io/k8snetworkplumbingwg/multus-cni:snapshot
-        command: ["/thin_entrypoint"]
-        args:
-        - "--multus-conf-file=/tmp/multus-conf/00-multus.conf"
-        - "--cni-conf-dir=/host/etc/cni/net.d"
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "50Mi"
-          limits:
-            cpu: "100m"
-            memory: "50Mi"
-        securityContext:
-          privileged: true
-        terminationMessagePolicy: FallbackToLogsOnError
-        volumeMounts:
-        - name: cni
-          mountPath: /host/etc/cni/net.d
-        - name: cnibin
-          mountPath: /host/opt/cni/bin
-        - name: multus-cfg
-          mountPath: /tmp/multus-conf
+        - name: kube-multus
+          image: ghcr.io/k8snetworkplumbingwg/multus-cni:snapshot-thick
+          command: [ "/usr/src/multus-cni/bin/multus-daemon" ]
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "50Mi"
+            limits:
+              cpu: "100m"
+              memory: "50Mi"
+          securityContext:
+            privileged: true
+          terminationMessagePolicy: FallbackToLogsOnError
+          volumeMounts:
+            - name: cni
+              mountPath: /host/etc/cni/net.d
+            - name: cnibin
+              mountPath: /opt/cni/bin
+            - name: host-run
+              mountPath: /host/run
+            - name: host-var-lib-cni-multus
+              mountPath: /var/lib/cni/multus
+            - name: host-var-lib-kubelet
+              mountPath: /var/lib/kubelet
+              mountPropagation: HostToContainer
+            - name: host-run-k8s-cni-cncf-io
+              mountPath: /run/k8s.cni.cncf.io
+            - name: host-run-netns
+              mountPath: /run/netns
+              mountPropagation: HostToContainer
+            - name: multus-daemon-config
+              mountPath: /etc/cni/net.d/multus.d
+              readOnly: true
+            - name: hostroot
+              mountPath: /hostroot
+              mountPropagation: HostToContainer
+            - mountPath: /etc/cni/multus/net.d
+              name: multus-conf-dir
+          env:
+            - name: MULTUS_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
       initContainers:
         - name: install-multus-binary
-          image: ghcr.io/k8snetworkplumbingwg/multus-cni:snapshot
-          command: ["/install_multus"]
-          args:
-            - "--type"
-            - "thin"
+          image: ghcr.io/k8snetworkplumbingwg/multus-cni:snapshot-thick
+          command:
+            - "/usr/src/multus-cni/bin/install_multus"
+            - "-d"
+            - "/host/opt/cni/bin"
+            - "-t"
+            - "thick"
           resources:
             requests:
               cpu: "10m"
@@ -152,23 +178,6 @@ spec:
             - name: cnibin
               mountPath: /host/opt/cni/bin
               mountPropagation: Bidirectional
-        - name: install-cni-plugins
-          image: busybox
-          command: ['sh', '-c', 'cp /host-k0s-cni-bin/macvlan /host/opt/cni/bin/macvlan 2>/dev/null; cp /host-k0s-cni-bin/bridge /host/opt/cni/bin/bridge 2>/dev/null; cp /host-k0s-cni-bin/dhcp /host/opt/cni/bin/dhcp 2>/dev/null; cp /host-k0s-cni-bin/static /host/opt/cni/bin/static 2>/dev/null; true']
-          resources:
-            requests:
-              cpu: "10m"
-              memory: "15Mi"
-          securityContext:
-            privileged: true
-          terminationMessagePolicy: FallbackToLogsOnError
-          volumeMounts:
-            - name: cnibin
-              mountPath: /host/opt/cni/bin
-              mountPropagation: Bidirectional
-            - name: k0s-cni-bin
-              mountPath: /host-k0s-cni-bin
-              readOnly: true
       terminationGracePeriodSeconds: 10
       volumes:
         - name: cni
@@ -177,12 +186,30 @@ spec:
         - name: cnibin
           hostPath:
             path: /opt/cni/bin
-        - name: k0s-cni-bin
+        - name: hostroot
           hostPath:
-            path: /var/lib/k0s/cni/bin
-        - name: multus-cfg
+            path: /
+        - name: multus-daemon-config
           configMap:
-            name: multus-cni-config
+            name: multus-daemon-config
             items:
-            - key: cni-conf.json
-              path: 00-multus.conf
+            - key: daemon-config.json
+              path: daemon-config.json
+        - name: host-run
+          hostPath:
+            path: /run
+        - name: host-var-lib-cni-multus
+          hostPath:
+            path: /var/lib/cni/multus
+        - name: host-var-lib-kubelet
+          hostPath:
+            path: /var/lib/kubelet
+        - name: host-run-k8s-cni-cncf-io
+          hostPath:
+            path: /run/k8s.cni.cncf.io
+        - name: host-run-netns
+          hostPath:
+            path: /run/netns/
+        - name: multus-conf-dir
+          hostPath:
+            path: /etc/cni/multus/net.d
