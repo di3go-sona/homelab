@@ -153,8 +153,8 @@ spec:
               mountPath: /host/opt/cni/bin
               mountPropagation: Bidirectional
         - name: install-cni-plugins
-          image: docker.io/containernetworking/plugins:latest
-          command: ['sh', '-c', 'cp /usr/bin/macvlan /host/opt/cni/bin/macvlan 2>/dev/null; cp /usr/bin/bridge /host/opt/cni/bin/bridge 2>/dev/null; cp /usr/bin/dhcp /host/opt/cni/bin/dhcp 2>/dev/null; cp /usr/bin/static /host/opt/cni/bin/static 2>/dev/null; true']
+          image: ghcr.io/k8snetworkplumbingwg/multus-cni:snapshot
+          command: ['sh', '-c', 'cp /host-k0s-cni-bin/macvlan /host/opt/cni/bin/macvlan 2>/dev/null; cp /host-k0s-cni-bin/bridge /host/opt/cni/bin/bridge 2>/dev/null; cp /host-k0s-cni-bin/dhcp /host/opt/cni/bin/dhcp 2>/dev/null; cp /host-k0s-cni-bin/static /host/opt/cni/bin/static 2>/dev/null; true']
           resources:
             requests:
               cpu: "10m"
@@ -166,6 +166,9 @@ spec:
             - name: cnibin
               mountPath: /host/opt/cni/bin
               mountPropagation: Bidirectional
+            - name: k0s-cni-bin
+              mountPath: /host-k0s-cni-bin
+              readOnly: true
       terminationGracePeriodSeconds: 10
       volumes:
         - name: cni
@@ -174,6 +177,9 @@ spec:
         - name: cnibin
           hostPath:
             path: /opt/cni/bin
+        - name: k0s-cni-bin
+          hostPath:
+            path: /var/lib/k0s/cni/bin
         - name: multus-cfg
           configMap:
             name: multus-cni-config
