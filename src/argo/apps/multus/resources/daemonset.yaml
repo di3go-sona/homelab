@@ -115,7 +115,7 @@ spec:
         image: ghcr.io/k8snetworkplumbingwg/multus-cni:snapshot
         command: ["/thin_entrypoint"]
         args:
-        - "--multus-conf-file=/tmp/multus-conf/70-multus.conf"
+        - "--multus-conf-file=/tmp/multus-conf/00-multus.conf"
         - "--cni-conf-dir=/host/etc/cni/net.d"
         resources:
           requests:
@@ -152,6 +152,20 @@ spec:
             - name: cnibin
               mountPath: /host/opt/cni/bin
               mountPropagation: Bidirectional
+        - name: install-cni-plugins
+          image: ghcr.io/containernetworking/plugins:latest
+          command: ['sh', '-c', 'cp /usr/bin/macvlan /host/opt/cni/bin/macvlan 2>/dev/null; cp /usr/bin/bridge /host/opt/cni/bin/bridge 2>/dev/null; cp /usr/bin/dhcp /host/opt/cni/bin/dhcp 2>/dev/null; cp /usr/bin/static /host/opt/cni/bin/static 2>/dev/null; true']
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "15Mi"
+          securityContext:
+            privileged: true
+          terminationMessagePolicy: FallbackToLogsOnError
+          volumeMounts:
+            - name: cnibin
+              mountPath: /host/opt/cni/bin
+              mountPropagation: Bidirectional
       terminationGracePeriodSeconds: 10
       volumes:
         - name: cni
@@ -165,4 +179,4 @@ spec:
             name: multus-cni-config
             items:
             - key: cni-conf.json
-              path: 70-multus.conf
+              path: 00-multus.conf
