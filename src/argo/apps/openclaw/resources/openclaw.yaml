@@ -101,6 +101,7 @@ metadata:
   namespace: openclaw
   annotations:
     ingress.cilium.io/force-https: "disabled"
+    ingress.cilium.io/connection-idle-timeout: "0"
 spec:
   ingressClassName: cilium
   tls:
