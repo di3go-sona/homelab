@@ -49,6 +49,8 @@ spec:
           ports:
             - containerPort: 18789
           env:
+            - name: GOG_KEYRING_PASSWORD
+              value: ""
             - name: TZ
               value: Europe/Rome
             - name: PATH
