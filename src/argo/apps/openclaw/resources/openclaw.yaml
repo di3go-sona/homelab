@@ -26,6 +26,23 @@ spec:
       labels:
         app: openclaw
     spec:
+      initContainers:
+        - name: install-gog
+          image: curlimages/curl:latest
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /config/bin
+              if [ ! -f /config/bin/gog ]; then
+                ARCH=arm64
+                curl -fsSL "https://github.com/openclaw/gogcli/releases/download/v0.33.0/gogcli_0.33.0_linux_${ARCH}.tar.gz" | tar xz -C /tmp
+                mv /tmp/gog /config/bin/gog
+                chmod +x /config/bin/gog
+              fi
+          volumeMounts:
+            - name: config
+              mountPath: /config
       containers:
         - name: openclaw
           image: ghcr.io/openclaw/openclaw:latest
@@ -34,6 +51,8 @@ spec:
           env:
             - name: TZ
               value: Europe/Rome
+            - name: PATH
+              value: /home/node/.openclaw/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
             - name: OPENCLAW_GATEWAY_TOKEN
               valueFrom:
                 secretKeyRef:
