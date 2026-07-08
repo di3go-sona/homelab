@@ -51,6 +51,8 @@ spec:
           env:
             - name: GOG_KEYRING_PASSWORD
               value: ""
+            - name: GOG_HOME
+              value: /home/node/.openclaw/adapters/gog
             - name: TZ
               value: Europe/Rome
             - name: PATH
