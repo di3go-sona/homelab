@@ -50,7 +50,10 @@ spec:
             - containerPort: 18789
           env:
             - name: GOG_KEYRING_PASSWORD
-              value: ""
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-gog-keyring
+                  key: password
             - name: GOG_HOME
               value: /home/node/.openclaw/adapters/gog
             - name: TZ
