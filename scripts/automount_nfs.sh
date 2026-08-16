@@ -3,7 +3,7 @@
 # Run with: sudo ./scripts/setup-nfs-macos.sh
 set -e
 MOUNT_NAME="HDD0"
-NFS_SERVER="192.168.8.13"
+NFS_SERVER="192.168.8.12"
 NFS_PATH="/mnt/hdd0"
 LOCAL_PATH="/Volumes/${MOUNT_NAME}"
 echo "Setting up NFS automount for ${NFS_SERVER}:${NFS_PATH}"

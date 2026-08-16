@@ -1,0 +1,26 @@
+apiVersion: cilium.io/v2
+kind: CiliumEnvoyConfig
+metadata:
+  name: openclaw-ws-timeout
+  namespace: openclaw
+spec:
+  services:
+    - name: openclaw
+      namespace: openclaw
+  resources:
+    - "@type": type.googleapis.com/envoy.config.route.v3.RouteConfiguration
+      name: cilium-ingress-openclaw:openclaw:80
+      virtual_hosts:
+        - name: "openclaw.patat.in"
+          domains:
+            - "openclaw.patat.in"
+          routes:
+            - match:
+                prefix: "/"
+              route:
+                idle_timeout: "0s"
+                upgrade_configs:
+                  - upgrade_type: websocket
+                    connect_config:
+                      allow_post: true
+                timeout: "0s"

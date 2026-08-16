@@ -4,7 +4,7 @@ metadata:
   name: nfs-csi
 provisioner: nfs.csi.k8s.io
 parameters:
-  server: "192.168.8.13"
+  server: "192.168.8.12"
   share: "/mnt/hdd0/homelab"
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
