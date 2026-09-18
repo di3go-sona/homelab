@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: open-money-tracker
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/di3go-sona/open-money-tracker.git
+    targetRevision: main
+    path: charts/open-money-tracker
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: open-money-tracker
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
