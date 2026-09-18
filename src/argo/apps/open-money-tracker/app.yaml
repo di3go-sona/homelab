@@ -10,9 +10,11 @@ spec:
     targetRevision: main
     path: charts/open-money-tracker
     helm:
-      valuesObject:
-        imagePullSecrets:
-          - name: ghcr-pull
+      parameters:
+        - name: imagePullSecrets[0].name
+          value: ghcr-pull
+        - name: postgresql.storageClassName
+          value: nfs-csi
   destination:
     server: https://kubernetes.default.svc
     namespace: open-money-tracker
