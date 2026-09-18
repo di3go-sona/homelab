@@ -9,6 +9,10 @@ spec:
     repoURL: https://github.com/di3go-sona/open-money-tracker.git
     targetRevision: main
     path: charts/open-money-tracker
+    helm:
+      valuesObject:
+        imagePullSecrets:
+          - name: ghcr-pull
   destination:
     server: https://kubernetes.default.svc
     namespace: open-money-tracker
