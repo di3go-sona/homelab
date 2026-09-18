@@ -15,6 +15,10 @@ spec:
           value: ghcr-pull
         - name: postgresql.storageClassName
           value: nfs-csi
+        - name: ingress.className
+          value: cilium
+        - name: ingress.host
+          value: money.patat.in
   destination:
     server: https://kubernetes.default.svc
     namespace: open-money-tracker
