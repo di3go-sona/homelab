@@ -72,10 +72,10 @@ spec:
   ingressClassName: cilium
   tls:
     - hosts:
-        - homeassistant.patat.in
-      secretName: wildcard-patat-in-tls
+        - homeassistant.lab.di3go-sona.dev
+      secretName: lab-di3go-sona-dev-tls
   rules:
-    - host: homeassistant.patat.in
+    - host: homeassistant.lab.di3go-sona.dev
       http:
         paths:
           - path: /

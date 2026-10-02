@@ -1,13 +1,13 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: wildcard-patat-in
+  name: lab-di3go-sona-dev
   namespace: cert-manager
 spec:
-  secretName: wildcard-patat-in-tls
+  secretName: lab-di3go-sona-dev-tls
   dnsNames:
-    - patat.in
-    - '*.patat.in'
+    - lab.di3go-sona.dev
+    - '*.lab.di3go-sona.dev'
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer

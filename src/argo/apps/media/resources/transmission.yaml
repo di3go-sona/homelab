@@ -91,10 +91,10 @@ spec:
   ingressClassName: cilium
   tls:
     - hosts:
-        - transmission.patat.in
-      secretName: wildcard-patat-in-tls
+        - transmission.lab.di3go-sona.dev
+      secretName: lab-di3go-sona-dev-tls
   rules:
-    - host: transmission.patat.in
+    - host: transmission.lab.di3go-sona.dev
       http:
         paths:
           - path: /

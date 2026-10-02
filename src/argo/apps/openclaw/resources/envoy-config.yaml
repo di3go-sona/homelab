@@ -11,9 +11,9 @@ spec:
     - "@type": type.googleapis.com/envoy.config.route.v3.RouteConfiguration
       name: cilium-ingress-openclaw:openclaw:80
       virtual_hosts:
-        - name: "openclaw.patat.in"
+        - name: "openclaw.lab.di3go-sona.dev"
           domains:
-            - "openclaw.patat.in"
+            - "openclaw.lab.di3go-sona.dev"
           routes:
             - match:
                 prefix: "/"

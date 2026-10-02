@@ -17,7 +17,7 @@ An Ansible + GitOps automation project for managing a mixed-architecture Kuberne
 **GitOps**: ArgoCD — all apps managed declaratively from this repo  
 **Networking**: Cilium CNI with L2 load balancing (IP pool: `192.168.8.20–29`)  
 **Storage**: NFS-CSI driver backed by a drive mounted on `pi-delta` at `/mnt/hdd0`  
-**Ingress domain**: `*.patat.in`
+**Ingress domain**: `*.lab.di3go-sona.dev`
 
 ## 🚀 Applications
 
@@ -25,16 +25,16 @@ All apps are deployed via ArgoCD and live in `src/argo/apps/`.
 
 | App | Ingress | Notes |
 |---|---|---|
-| **ArgoCD** | `argo.patat.in` | GitOps controller, anonymous admin access |
-| **Transmission** | `transmission.patat.in` | BitTorrent client |
-| **Jellyfin** | `jellyfin.patat.in` | Media server |
-| **Sonarr** | `sonarr.patat.in` | TV show management |
-| **Radarr** | `radarr.patat.in` | Movie management |
-| **Prowlarr** | `prowlarr.patat.in` | Indexer manager |
+| **ArgoCD** | `argo.lab.di3go-sona.dev` | GitOps controller, anonymous admin access |
+| **Transmission** | `transmission.lab.di3go-sona.dev` | BitTorrent client |
+| **Jellyfin** | `jellyfin.lab.di3go-sona.dev` | Media server |
+| **Sonarr** | `sonarr.lab.di3go-sona.dev` | TV show management |
+| **Radarr** | `radarr.lab.di3go-sona.dev` | Movie management |
+| **Prowlarr** | `prowlarr.lab.di3go-sona.dev` | Indexer manager |
 | **FlareSolverr** | — | Cloudflare bypass proxy |
-| **Home Assistant** | `homeassistant.patat.in` | Home automation, multus macvlan @ 192.168.8.80 for mDNS. Custom integrations (e.g. [tuya-local](https://github.com/make-all/tuya-local)) managed manually via HACS — see below |
-| **ESPHome** | `esphome.patat.in` | ESP8266/ESP32 firmware builder |
-| **OpenClaw** | `openclaw.patat.in` | Personal AI assistant, WebChat UI |
+| **Home Assistant** | `homeassistant.lab.di3go-sona.dev` | Home automation, multus macvlan @ 192.168.8.80 for mDNS. Custom integrations (e.g. [tuya-local](https://github.com/make-all/tuya-local)) managed manually via HACS — see below |
+| **ESPHome** | `esphome.lab.di3go-sona.dev` | ESP8266/ESP32 firmware builder |
+| **OpenClaw** | `openclaw.lab.di3go-sona.dev` | Personal AI assistant, WebChat UI |
 
 All media apps share a 10Ti NFS-backed PVC mounted at `/data`.
 

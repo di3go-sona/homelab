@@ -9,10 +9,10 @@ spec:
   ingressClassName: cilium
   tls:
     - hosts:
-        - argo.patat.in
-      secretName: wildcard-patat-in-tls
+        - argo.lab.di3go-sona.dev
+      secretName: lab-di3go-sona-dev-tls
   rules:
-    - host: argo.patat.in
+    - host: argo.lab.di3go-sona.dev
       http:
         paths:
           - path: /

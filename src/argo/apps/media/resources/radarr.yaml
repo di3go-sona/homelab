@@ -75,10 +75,10 @@ spec:
   ingressClassName: cilium
   tls:
     - hosts:
-        - radarr.patat.in
-      secretName: wildcard-patat-in-tls
+        - radarr.lab.di3go-sona.dev
+      secretName: lab-di3go-sona-dev-tls
   rules:
-    - host: radarr.patat.in
+    - host: radarr.lab.di3go-sona.dev
       http:
         paths:
           - path: /

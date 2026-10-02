@@ -65,10 +65,10 @@ spec:
   ingressClassName: cilium
   tls:
     - hosts:
-        - esphome.patat.in
-      secretName: wildcard-patat-in-tls
+        - esphome.lab.di3go-sona.dev
+      secretName: lab-di3go-sona-dev-tls
   rules:
-    - host: esphome.patat.in
+    - host: esphome.lab.di3go-sona.dev
       http:
         paths:
           - path: /
