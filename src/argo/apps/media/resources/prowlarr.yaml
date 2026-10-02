@@ -70,7 +70,7 @@ spec:
   tls:
     - hosts:
         - prowlarr.lab.di3go-sona.dev
-      secretName: lab-di3go-sona-dev-tls
+      secretName: prowlarr-tls
   rules:
     - host: prowlarr.lab.di3go-sona.dev
       http:

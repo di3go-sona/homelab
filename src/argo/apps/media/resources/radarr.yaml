@@ -76,7 +76,7 @@ spec:
   tls:
     - hosts:
         - radarr.lab.di3go-sona.dev
-      secretName: lab-di3go-sona-dev-tls
+      secretName: radarr-tls
   rules:
     - host: radarr.lab.di3go-sona.dev
       http:

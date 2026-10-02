@@ -75,7 +75,7 @@ spec:
   tls:
     - hosts:
         - jellyfin.lab.di3go-sona.dev
-      secretName: lab-di3go-sona-dev-tls
+      secretName: jellyfin-tls
   rules:
     - host: jellyfin.lab.di3go-sona.dev
       http:

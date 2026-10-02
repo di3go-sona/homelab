@@ -1,0 +1,77 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: bazarr-tls
+  namespace: media
+spec:
+  secretName: bazarr-tls
+  dnsNames:
+    - bazarr.lab.di3go-sona.dev
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: jellyfin-tls
+  namespace: media
+spec:
+  secretName: jellyfin-tls
+  dnsNames:
+    - jellyfin.lab.di3go-sona.dev
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: prowlarr-tls
+  namespace: media
+spec:
+  secretName: prowlarr-tls
+  dnsNames:
+    - prowlarr.lab.di3go-sona.dev
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: radarr-tls
+  namespace: media
+spec:
+  secretName: radarr-tls
+  dnsNames:
+    - radarr.lab.di3go-sona.dev
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: sonarr-tls
+  namespace: media
+spec:
+  secretName: sonarr-tls
+  dnsNames:
+    - sonarr.lab.di3go-sona.dev
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: transmission-tls
+  namespace: media
+spec:
+  secretName: transmission-tls
+  dnsNames:
+    - transmission.lab.di3go-sona.dev
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer

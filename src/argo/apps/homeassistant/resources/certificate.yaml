@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: homeassistant-tls
+  namespace: homeassistant
+spec:
+  secretName: homeassistant-tls
+  dnsNames:
+    - homeassistant.lab.di3go-sona.dev
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer

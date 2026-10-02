@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: dashy-tls
+  namespace: dashy
+spec:
+  secretName: dashy-tls
+  dnsNames:
+    - lab.di3go-sona.dev
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer

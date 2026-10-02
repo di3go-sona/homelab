@@ -92,7 +92,7 @@ spec:
   tls:
     - hosts:
         - transmission.lab.di3go-sona.dev
-      secretName: lab-di3go-sona-dev-tls
+      secretName: transmission-tls
   rules:
     - host: transmission.lab.di3go-sona.dev
       http:
