@@ -5,22 +5,22 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: https://github.com/di3go-sona/open-money-tracker.git
-    targetRevision: main
-    path: charts/open-money-tracker
-    helm:
-      parameters:
-        - name: imagePullSecrets[0].name
-          value: ghcr-pull
-        - name: postgresql.storageClassName
-          value: nfs-csi
-        - name: import.persistence.storageClassName
-          value: nfs-csi
-        - name: ingress.className
-          value: cilium
-        - name: ingress.host
-          value: money.lab.di3go-sona.dev
+  sources:
+    - repoURL: https://github.com/di3go-sona/open-money-tracker.git
+      targetRevision: main
+      path: charts/open-money-tracker
+      helm:
+        parameters:
+          - name: imagePullSecrets[0].name
+            value: ghcr-pull
+          - name: postgresql.storageClassName
+            value: nfs-csi
+          - name: import.persistence.storageClassName
+            value: nfs-csi
+          - name: ingress.className
+            value: cilium
+          - name: ingress.host
+            value: money.lab.di3go-sona.dev
     - repoURL: https://github.com/di3go-sona/homelab.git
       targetRevision: main
       path: src/argo/apps/open-money-tracker/resources
