@@ -21,6 +21,9 @@ spec:
           value: cilium
         - name: ingress.host
           value: money.lab.di3go-sona.dev
+    - repoURL: https://github.com/di3go-sona/homelab.git
+      targetRevision: main
+      path: src/argo/apps/open-money-tracker/resources
   destination:
     server: https://kubernetes.default.svc
     namespace: open-money-tracker
